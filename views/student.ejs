@@ -1557,10 +1557,10 @@
 
           // Render outcomes
           document.getElementById('complete-score').textContent =
-            `${result.percentage?.toFixed(1) || 0}%`;
+            `${result.attempt.percentage?.toFixed(1) || 0}%`;
 
           const labelEl = document.getElementById('complete-status-label');
-          if (result.passed) {
+          if (result.attempt.passed) {
             labelEl.textContent = 'Passed';
             labelEl.className = 'badge badge-success';
             document.getElementById('complete-outcome-title').textContent =
