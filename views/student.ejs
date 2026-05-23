@@ -1409,7 +1409,7 @@
           opts.forEach((o, index) => {
             const val = typeof o === 'object' ? o.text : o;
             optionsGrid.innerHTML += `
-            <div class="option-card" id="opt-${index}" onclick="selectOption(${index}, '${val}')">
+            <div class="option-card" id="opt-${index}" onclick="selectOption(${index}, '${labels[index]}')">
               <div class="option-bullet">${labels[index] || index + 1}</div>
               <div>${val}</div>
             </div>
