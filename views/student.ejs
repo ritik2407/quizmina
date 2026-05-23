@@ -1,558 +1,1167 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Dashboard | QuizMinia</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/feather-icons"></script>
-  <style>
-    :root {
-      --bg-dark: #0b0f19;
-      --card-bg: rgba(22, 28, 45, 0.6);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --accent: #6366f1;
-      --accent-glow: rgba(99, 102, 241, 0.15);
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --success: #10b981;
-      --error: #ef4444;
-      --warning: #f59e0b;
-      --info: #3b82f6;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
-    body {
-      background-color: var(--bg-dark);
-      background-image:
-        radial-gradient(at 0% 0%, rgba(99,102,241,0.1) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(139,92,246,0.1) 0px, transparent 50%);
-      min-height: 100vh; color: var(--text-main); display: flex; flex-direction: column;
-    }
-    .navbar {
-      background: rgba(15,23,42,0.8); backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 100;
-      padding: 0.75rem 2rem; display: flex; justify-content: space-between; align-items: center;
-    }
-    .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: #fff; }
-    .brand-logo {
-      display: flex; align-items: center; justify-content: center;
-      width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent), #8b5cf6);
-      border-radius: 12px; font-weight: 800; font-size: 20px; box-shadow: 0 4px 10px rgba(99,102,241,0.3);
-    }
-    .brand-name {
-      font-size: 20px; font-weight: 700;
-      background: linear-gradient(to right, #fff, #c7d2fe);
-      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .nav-right { display: flex; align-items: center; gap: 1rem; }
-    .notif-btn {
-      position: relative; background: rgba(255,255,255,0.05); border: 1px solid var(--card-border);
-      color: var(--text-muted); width: 38px; height: 38px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;
-    }
-    .notif-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
-    .notif-badge {
-      position: absolute; top: -4px; right: -4px; background: var(--error);
-      color: #fff; font-size: 10px; font-weight: 700; width: 18px; height: 18px;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    }
-    .user-avatar {
-      width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), #8b5cf6);
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      font-weight: 700; color: white; font-size: 14px;
-    }
-    .btn-logout {
-      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2);
-      color: #f87171; padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer;
-      font-size: 13px; font-weight: 600; transition: all 0.2s;
-    }
-    .btn-logout:hover { background: var(--error); color: #fff; }
-    .wrapper { max-width: 1200px; width: 100%; margin: 0 auto; padding: 2rem 1.5rem; flex: 1; }
-    .tabs {
-      display: flex; border-bottom: 1px solid var(--card-border);
-      gap: 2rem; margin-bottom: 2rem; overflow-x: auto;
-    }
-    .tab-btn {
-      background: none; border: none; color: var(--text-muted); padding: 0.75rem 0.5rem;
-      font-size: 16px; font-weight: 600; cursor: pointer; position: relative;
-      transition: color 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;
-    }
-    .tab-btn:hover { color: var(--text-main); }
-    .tab-btn.active { color: var(--accent); }
-    .tab-btn.active::after {
-      content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px;
-      background: var(--accent); box-shadow: 0 0 10px var(--accent);
-    }
-    .panel { display: none; animation: fadeIn 0.4s ease; }
-    .panel.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Dashboard | QuizMinia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+      :root {
+        --bg-dark: #0b0f19;
+        --card-bg: rgba(22, 28, 45, 0.6);
+        --card-border: rgba(255, 255, 255, 0.08);
+        --accent: #6366f1;
+        --accent-glow: rgba(99, 102, 241, 0.15);
+        --text-main: #f3f4f6;
+        --text-muted: #9ca3af;
+        --success: #10b981;
+        --error: #ef4444;
+        --warning: #f59e0b;
+        --info: #3b82f6;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Outfit', sans-serif;
+      }
+      body {
+        background-color: var(--bg-dark);
+        background-image:
+          radial-gradient(
+            at 0% 0%,
+            rgba(99, 102, 241, 0.1) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 100% 100%,
+            rgba(139, 92, 246, 0.1) 0px,
+            transparent 50%
+          );
+        min-height: 100vh;
+        color: var(--text-main);
+        display: flex;
+        flex-direction: column;
+      }
+      .navbar {
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--card-border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        padding: 0.75rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        color: #fff;
+      }
+      .brand-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--accent), #8b5cf6);
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 20px;
+        box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+      }
+      .brand-name {
+        font-size: 20px;
+        font-weight: 700;
+        background: linear-gradient(to right, #fff, #c7d2fe);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .notif-btn {
+        position: relative;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--card-border);
+        color: var(--text-muted);
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .notif-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+      .notif-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background: var(--error);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .user-avatar {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, var(--accent), #8b5cf6);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: white;
+        font-size: 14px;
+      }
+      .btn-logout {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: #f87171;
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .btn-logout:hover {
+        background: var(--error);
+        color: #fff;
+      }
+      .wrapper {
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+        flex: 1;
+      }
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid var(--card-border);
+        gap: 2rem;
+        margin-bottom: 2rem;
+        overflow-x: auto;
+      }
+      .tab-btn {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        padding: 0.75rem 0.5rem;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        position: relative;
+        transition: color 0.2s;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .tab-btn:hover {
+        color: var(--text-main);
+      }
+      .tab-btn.active {
+        color: var(--accent);
+      }
+      .tab-btn.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--accent);
+        box-shadow: 0 0 10px var(--accent);
+      }
+      .panel {
+        display: none;
+        animation: fadeIn 0.4s ease;
+      }
+      .panel.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-    /* Welcome Banner */
-    .welcome-banner {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
-      border: 1px solid var(--card-border); border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
-      display: flex; flex-direction: column; gap: 0.5rem;
-    }
-    .welcome-banner h1 { font-size: 28px; font-weight: 800; }
-    .welcome-banner p { color: var(--text-muted); }
+      /* Welcome Banner */
+      .welcome-banner {
+        background: linear-gradient(
+          135deg,
+          rgba(99, 102, 241, 0.15) 0%,
+          rgba(139, 92, 246, 0.15) 100%
+        );
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .welcome-banner h1 {
+        font-size: 28px;
+        font-weight: 800;
+      }
+      .welcome-banner p {
+        color: var(--text-muted);
+      }
 
-    /* Grid layout */
-    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-    .grid-2col { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
-    @media (max-width: 900px) { .grid-2col { grid-template-columns: 1fr; } }
+      /* Grid layout */
+      .grid-4 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      .grid-2col {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+      }
+      @media (max-width: 900px) {
+        .grid-2col {
+          grid-template-columns: 1fr;
+        }
+      }
 
-    .card {
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: 16px; padding: 1.5rem; backdrop-filter: blur(8px);
-    }
-    .card-title { font-size: 14px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.75rem; }
-    .card-val { font-size: 32px; font-weight: 700; }
-    
-    /* Lists & Tables */
-    .table-container { overflow-x: auto; margin-top: 1rem; }
-    table { width: 100%; border-collapse: collapse; text-align: left; }
-    th { padding: 1rem; color: var(--text-muted); border-bottom: 1px solid var(--card-border); font-size: 13px; font-weight: 600; }
-    td { padding: 1rem; border-bottom: 1px solid var(--card-border); font-size: 14px; }
-    tr:hover td { background: rgba(255,255,255,0.02); }
+      .card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        backdrop-filter: blur(8px);
+      }
+      .card-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        margin-bottom: 0.75rem;
+      }
+      .card-val {
+        font-size: 32px;
+        font-weight: 700;
+      }
 
-    .badge {
-      display: inline-flex; align-items: center; padding: 0.25rem 0.6rem; border-radius: 9999px;
-      font-size: 12px; font-weight: 600; text-transform: capitalize;
-    }
-    .badge-success { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
-    .badge-error { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
-    .badge-warning { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
-    .badge-info { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+      /* Lists & Tables */
+      .table-container {
+        overflow-x: auto;
+        margin-top: 1rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+      }
+      th {
+        padding: 1rem;
+        color: var(--text-muted);
+        border-bottom: 1px solid var(--card-border);
+        font-size: 13px;
+        font-weight: 600;
+      }
+      td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--card-border);
+        font-size: 14px;
+      }
+      tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+      }
 
-    /* Pill list */
-    .pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
-    .pill {
-      padding: 0.35rem 0.75rem; border-radius: 8px; font-size: 13px; font-weight: 500;
-      background: rgba(255,255,255,0.05); border: 1px solid var(--card-border);
-    }
-    .pill-strength { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); color: #34d399; }
-    .pill-weakness { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.2); color: #f87171; }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.6rem;
+        border-radius: 9999px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: capitalize;
+      }
+      .badge-success {
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+      }
+      .badge-error {
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+      }
+      .badge-warning {
+        background: rgba(245, 158, 11, 0.15);
+        color: #fbbf24;
+        border: 1px solid rgba(245, 158, 11, 0.2);
+      }
+      .badge-info {
+        background: rgba(59, 130, 246, 0.15);
+        color: #60a5fa;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+      }
 
-    /* Quizzes grid */
-    .quizzes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
-    .quiz-card {
-      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px;
-      padding: 1.5rem; backdrop-filter: blur(8px); display: flex; flex-direction: column;
-      justify-content: space-between; transition: all 0.2s;
-    }
-    .quiz-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 8px 24px rgba(99,102,241,0.15); }
-    .quiz-subject { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.5rem; }
-    .quiz-title { font-size: 18px; font-weight: 700; margin-bottom: 1rem; }
-    .quiz-meta { display: flex; gap: 1rem; margin-bottom: 1.5rem; font-size: 13px; color: var(--text-muted); }
-    
-    .btn {
-      width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
-      padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; cursor: pointer; border: none;
-      transition: all 0.2s; font-size: 14px;
-    }
-    .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 4px 12px rgba(99,102,241,0.3); }
-    .btn-primary:hover { background: #4f46e5; }
-    .btn-secondary { background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--card-border); }
-    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+      /* Pill list */
+      .pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      .pill {
+        padding: 0.35rem 0.75rem;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--card-border);
+      }
+      .pill-strength {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: rgba(16, 185, 129, 0.2);
+        color: #34d399;
+      }
+      .pill-weakness {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.2);
+        color: #f87171;
+      }
 
-    /* Filters */
-    .filter-bar {
-      display: flex; gap: 1rem; background: var(--card-bg); border: 1px solid var(--card-border);
-      padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; align-items: center; flex-wrap: wrap;
-    }
-    .filter-input {
-      background: rgba(0,0,0,0.2); border: 1px solid var(--card-border); border-radius: 8px;
-      color: #fff; padding: 0.5rem 1rem; font-size: 14px; outline: none; flex: 1; min-width: 150px;
-    }
-    .filter-select {
-      background: rgba(0,0,0,0.2); border: 1px solid var(--card-border); border-radius: 8px;
-      color: #fff; padding: 0.5rem 1rem; font-size: 14px; outline: none; min-width: 130px;
-    }
+      /* Quizzes grid */
+      .quizzes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+      .quiz-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        backdrop-filter: blur(8px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: all 0.2s;
+      }
+      .quiz-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--accent);
+        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
+      }
+      .quiz-subject {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+      }
+      .quiz-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+      .quiz-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 13px;
+        color: var(--text-muted);
+      }
 
-    /* Modal / Overlay Workspace */
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11,15,25,0.9);
-      backdrop-filter: blur(16px); z-index: 1000; display: none; align-items: center; justify-content: center;
-      padding: 1.5rem; overflow-y: auto;
-    }
-    .modal-overlay.active { display: flex; }
-    .modal-content {
-      background: #0f172a; border: 1px solid var(--card-border); border-radius: 20px;
-      width: 100%; max-width: 680px; padding: 2.5rem; box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-    }
-    .workspace-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 1rem; margin-bottom: 1.5rem; }
-    .workspace-title { font-size: 20px; font-weight: 700; }
-    .difficulty-bar { display: flex; align-items: center; gap: 0.5rem; font-size: 13px; color: var(--text-muted); }
+      .btn {
+        width: 100%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+        font-size: 14px;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      }
+      .btn-primary:hover {
+        background: #4f46e5;
+      }
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-main);
+        border: 1px solid var(--card-border);
+      }
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
 
-    /* Quiz Question Panel */
-    .question-box { font-size: 18px; font-weight: 600; line-height: 1.5; margin-bottom: 2rem; color: #fff; }
-    .options-grid { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
-    .option-card {
-      background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 12px;
-      padding: 1.25rem; cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: all 0.2s;
-    }
-    .option-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(99,102,241,0.5); }
-    .option-card.selected { background: rgba(99,102,241,0.15); border-color: var(--accent); }
-    .option-bullet {
-      width: 24px; height: 24px; border-radius: 6px; background: rgba(255,255,255,0.1);
-      display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;
-    }
-    .option-card.selected .option-bullet { background: var(--accent); color: white; }
+      /* Filters */
+      .filter-bar {
+        display: flex;
+        gap: 1rem;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        padding: 1rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .filter-input {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--card-border);
+        border-radius: 8px;
+        color: #fff;
+        padding: 0.5rem 1rem;
+        font-size: 14px;
+        outline: none;
+        flex: 1;
+        min-width: 150px;
+      }
+      .filter-select {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--card-border);
+        border-radius: 8px;
+        color: #fff;
+        padding: 0.5rem 1rem;
+        font-size: 14px;
+        outline: none;
+        min-width: 130px;
+      }
 
-    .input-text {
-      width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--card-border);
-      border-radius: 12px; padding: 1.25rem; color: white; font-size: 15px; outline: none;
-      resize: vertical; min-height: 100px; margin-bottom: 2rem;
-    }
-    .input-text:focus { border-color: var(--accent); }
+      /* Modal / Overlay Workspace */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(11, 15, 25, 0.9);
+        backdrop-filter: blur(16px);
+        z-index: 1000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        overflow-y: auto;
+      }
+      .modal-overlay.active {
+        display: flex;
+      }
+      .modal-content {
+        background: #0f172a;
+        border: 1px solid var(--card-border);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 680px;
+        padding: 2.5rem;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+      }
+      .workspace-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--card-border);
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .workspace-title {
+        font-size: 20px;
+        font-weight: 700;
+      }
+      .difficulty-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 13px;
+        color: var(--text-muted);
+      }
 
-    /* Answer Feedback block */
-    .feedback-box {
-      border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; display: none;
-    }
-    .feedback-box.correct { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); display: block; }
-    .feedback-box.incorrect { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); display: block; }
-    .feedback-header { font-size: 16px; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
-    .feedback-body { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+      /* Quiz Question Panel */
+      .question-box {
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 1.5;
+        margin-bottom: 2rem;
+        color: #fff;
+      }
+      .options-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .option-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        padding: 1.25rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.2s;
+      }
+      .option-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(99, 102, 241, 0.5);
+      }
+      .option-card.selected {
+        background: rgba(99, 102, 241, 0.15);
+        border-color: var(--accent);
+      }
+      .option-bullet {
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .option-card.selected .option-bullet {
+        background: var(--accent);
+        color: white;
+      }
 
-    /* Notifications */
-    .notif-item {
-      display: flex; gap: 1rem; padding: 1rem; border-radius: 12px; background: rgba(255,255,255,0.02);
-      border: 1px solid var(--card-border); margin-bottom: 1rem; justify-content: space-between; align-items: flex-start;
-    }
-    .notif-item.unread { border-left: 3px solid var(--accent); background: rgba(99,102,241,0.05); }
-    .notif-text { display: flex; flex-direction: column; gap: 0.25rem; flex: 1; }
-    .notif-title { font-weight: 600; font-size: 14px; }
-    .notif-msg { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
-    .notif-time { font-size: 11px; color: var(--text-muted); margin-top: 0.25rem; }
+      .input-text {
+        width: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        padding: 1.25rem;
+        color: white;
+        font-size: 15px;
+        outline: none;
+        resize: vertical;
+        min-height: 100px;
+        margin-bottom: 2rem;
+      }
+      .input-text:focus {
+        border-color: var(--accent);
+      }
 
-    /* Reusable Loading Spinner styles */
-    .loader-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 3rem 1.5rem;
-      color: var(--text-muted);
-      gap: 1rem;
-    }
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid rgba(99, 102, 241, 0.15);
-      border-radius: 50%;
-      border-top-color: var(--accent);
-      animation: spin 1s ease-in-out infinite;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-  </style>
-</head>
-<body>
+      /* Answer Feedback block */
+      .feedback-box {
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        display: none;
+      }
+      .feedback-box.correct {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        display: block;
+      }
+      .feedback-box.incorrect {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        display: block;
+      }
+      .feedback-header {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .feedback-body {
+        font-size: 14px;
+        color: var(--text-muted);
+        line-height: 1.5;
+      }
 
-  <!-- Navbar -->
-  <header class="navbar">
-    <a href="#" class="brand">
-      <div class="brand-logo">Q</div>
-      <div class="brand-name">QuizMinia</div>
-    </a>
-    <div class="nav-right">
-      <button class="notif-btn" onclick="switchTab('notifications')">
-        <i data-feather="bell" style="width: 18px; height: 18px;"></i>
-        <div class="notif-badge" id="unread-badge">0</div>
-      </button>
-      <div class="user-avatar" id="avatar-letters">S</div>
-      <div style="font-weight: 600; font-size: 14px; margin-right: 0.5rem;"><%= user.firstName %></div>
-      <button class="btn-logout" onclick="logout()">Logout</button>
-    </div>
-  </header>
+      /* Notifications */
+      .notif-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--card-border);
+        margin-bottom: 1rem;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .notif-item.unread {
+        border-left: 3px solid var(--accent);
+        background: rgba(99, 102, 241, 0.05);
+      }
+      .notif-text {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        flex: 1;
+      }
+      .notif-title {
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .notif-msg {
+        font-size: 13px;
+        color: var(--text-muted);
+        line-height: 1.4;
+      }
+      .notif-time {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+      }
 
-  <main class="wrapper">
-    <!-- Tabs Navigation -->
-    <nav class="tabs">
-      <button class="tab-btn active" id="tab-dashboard" onclick="switchTab('dashboard')">
-        <i data-feather="home" style="width: 18px; height: 18px;"></i> Dashboard
-      </button>
-      <button class="tab-btn" id="tab-quizzes" onclick="switchTab('quizzes')">
-        <i data-feather="book-open" style="width: 18px; height: 18px;"></i> Available Quizzes
-      </button>
-      <button class="tab-btn" id="tab-history" onclick="switchTab('history')">
-        <i data-feather="clock" style="width: 18px; height: 18px;"></i> My History
-      </button>
-      <button class="tab-btn" id="tab-notifications" onclick="switchTab('notifications')">
-        <i data-feather="bell" style="width: 18px; height: 18px;"></i> Notifications
-      </button>
-    </nav>
-
-    <!-- DASHBOARD PANEL -->
-    <section class="panel active" id="panel-dashboard">
-      <div class="welcome-banner">
-        <h1>Welcome Back, <%= user.firstName %>! 👋</h1>
-        <p>Your learning profile is initialized. Take a quiz to let the AI adapt to your skills!</p>
+      /* Reusable Loading Spinner styles */
+      .loader-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 1.5rem;
+        color: var(--text-muted);
+        gap: 1rem;
+      }
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(99, 102, 241, 0.15);
+        border-radius: 50%;
+        border-top-color: var(--accent);
+        animation: spin 1s ease-in-out infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <header class="navbar">
+      <a href="#" class="brand">
+        <div class="brand-logo">Q</div>
+        <div class="brand-name">QuizMinia</div>
+      </a>
+      <div class="nav-right">
+        <button class="notif-btn" onclick="switchTab('notifications')">
+          <i data-feather="bell" style="width: 18px; height: 18px"></i>
+          <div class="notif-badge" id="unread-badge">0</div>
+        </button>
+        <div class="user-avatar" id="avatar-letters">S</div>
+        <div style="font-weight: 600; font-size: 14px; margin-right: 0.5rem">
+          <%= user.firstName %>
+        </div>
+        <button class="btn-logout" onclick="logout()">Logout</button>
       </div>
+    </header>
 
-      <div class="grid-4">
-        <div class="card">
-          <div class="card-title">Completed Quizzes</div>
-          <div class="card-val" id="stats-completed">0</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Average Score</div>
-          <div class="card-val" id="stats-avg">0%</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Success Rate</div>
-          <div class="card-val" id="stats-rate">0%</div>
-        </div>
-        <div class="card">
-          <div class="card-title">AI Tier Level</div>
-          <div class="card-val" style="text-transform: capitalize;" id="stats-pref">Medium</div>
-        </div>
-      </div>
+    <main class="wrapper">
+      <!-- Tabs Navigation -->
+      <nav class="tabs">
+        <button
+          class="tab-btn active"
+          id="tab-dashboard"
+          onclick="switchTab('dashboard')"
+        >
+          <i data-feather="home" style="width: 18px; height: 18px"></i>
+          Dashboard
+        </button>
+        <button class="tab-btn" id="tab-quizzes" onclick="switchTab('quizzes')">
+          <i data-feather="book-open" style="width: 18px; height: 18px"></i>
+          Available Quizzes
+        </button>
+        <button class="tab-btn" id="tab-history" onclick="switchTab('history')">
+          <i data-feather="clock" style="width: 18px; height: 18px"></i> My
+          History
+        </button>
+        <button
+          class="tab-btn"
+          id="tab-notifications"
+          onclick="switchTab('notifications')"
+        >
+          <i data-feather="bell" style="width: 18px; height: 18px"></i>
+          Notifications
+        </button>
+      </nav>
 
-      <div class="grid-2col">
-        <!-- Recent attempts -->
+      <!-- DASHBOARD PANEL -->
+      <section class="panel active" id="panel-dashboard">
+        <div class="welcome-banner">
+          <h1>Welcome Back, <%= user.firstName %>! 👋</h1>
+          <p>
+            Your learning profile is initialized. Take a quiz to let the AI
+            adapt to your skills!
+          </p>
+        </div>
+
+        <div class="grid-4">
+          <div class="card">
+            <div class="card-title">Completed Quizzes</div>
+            <div class="card-val" id="stats-completed">0</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Average Score</div>
+            <div class="card-val" id="stats-avg">0%</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Success Rate</div>
+            <div class="card-val" id="stats-rate">0%</div>
+          </div>
+          <div class="card">
+            <div class="card-title">AI Tier Level</div>
+            <div
+              class="card-val"
+              style="text-transform: capitalize"
+              id="stats-pref"
+            >
+              Medium
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2col">
+          <!-- Recent attempts -->
+          <div class="card">
+            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 1rem">
+              Recent Activity
+            </h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Quiz</th>
+                    <th>Score</th>
+                    <th>Outcome</th>
+                    <th>Completed</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboard-recent-tbody">
+                  <!-- Loader displayed here first -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Insights -->
+          <div class="card">
+            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 1rem">
+              Learning Profile
+            </h3>
+
+            <h4
+              style="
+                font-size: 13px;
+                font-weight: 700;
+                color: var(--text-muted);
+                margin-bottom: 0.5rem;
+                text-transform: uppercase;
+              "
+            >
+              Strengths
+            </h4>
+            <div class="pills" id="profile-strengths">
+              <!-- Loader -->
+            </div>
+
+            <h4
+              style="
+                font-size: 13px;
+                font-weight: 700;
+                color: var(--text-muted);
+                margin-top: 1.5rem;
+                margin-bottom: 0.5rem;
+                text-transform: uppercase;
+              "
+            >
+              Focus Areas
+            </h4>
+            <div class="pills" id="profile-weaknesses">
+              <!-- Loader -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AVAILABLE QUIZZES PANEL -->
+      <section class="panel" id="panel-quizzes">
+        <div class="filter-bar">
+          <input
+            type="text"
+            class="filter-input"
+            id="filter-search"
+            placeholder="Search quizzes by title or subject..."
+            oninput="loadQuizzes()"
+          />
+          <select
+            class="filter-select"
+            id="filter-difficulty"
+            onchange="loadQuizzes()"
+          >
+            <option value="">All Difficulties</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+
+        <div class="quizzes-grid" id="quizzes-container">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- MY HISTORY PANEL -->
+      <section class="panel" id="panel-history">
         <div class="card">
-          <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 1rem;">Recent Activity</h3>
+          <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 1rem">
+            Complete Attempt Log
+          </h3>
           <div class="table-container">
             <table>
               <thead>
                 <tr>
                   <th>Quiz</th>
+                  <th>Subject</th>
                   <th>Score</th>
-                  <th>Outcome</th>
-                  <th>Completed</th>
+                  <th>Required Pass</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Details</th>
                 </tr>
               </thead>
-              <tbody id="dashboard-recent-tbody">
-                <!-- Loader displayed here first -->
+              <tbody id="history-tbody">
+                <!-- Rendered dynamically -->
               </tbody>
             </table>
           </div>
         </div>
+      </section>
 
-        <!-- Insights -->
+      <!-- NOTIFICATIONS PANEL -->
+      <section class="panel" id="panel-notifications">
         <div class="card">
-          <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 1rem;">Learning Profile</h3>
-          
-          <h4 style="font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase;">Strengths</h4>
-          <div class="pills" id="profile-strengths">
-            <!-- Loader -->
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 1.5rem;
+            "
+          >
+            <h3 style="font-size: 18px; font-weight: 700">
+              Notification Inbox
+            </h3>
+            <button
+              class="btn btn-secondary"
+              style="width: auto; padding: 0.5rem 1rem; font-size: 13px"
+              onclick="markAllNotificationsRead()"
+            >
+              Mark All as Read
+            </button>
           </div>
-
-          <h4 style="font-size: 13px; font-weight: 700; color: var(--text-muted); margin-top: 1.5rem; margin-bottom: 0.5rem; text-transform: uppercase;">Focus Areas</h4>
-          <div class="pills" id="profile-weaknesses">
-            <!-- Loader -->
+          <div id="notifications-container">
+            <!-- Rendered dynamically -->
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
 
-    <!-- AVAILABLE QUIZZES PANEL -->
-    <section class="panel" id="panel-quizzes">
-      <div class="filter-bar">
-        <input type="text" class="filter-input" id="filter-search" placeholder="Search quizzes by title or subject..." oninput="loadQuizzes()">
-        <select class="filter-select" id="filter-difficulty" onchange="loadQuizzes()">
-          <option value="">All Difficulties</option>
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </select>
-      </div>
-
-      <div class="quizzes-grid" id="quizzes-container">
-        <!-- Rendered dynamically -->
-      </div>
-    </section>
-
-    <!-- MY HISTORY PANEL -->
-    <section class="panel" id="panel-history">
-      <div class="card">
-        <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 1rem;">Complete Attempt Log</h3>
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Quiz</th>
-                <th>Subject</th>
-                <th>Score</th>
-                <th>Required Pass</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Details</th>
-              </tr>
-            </thead>
-            <tbody id="history-tbody">
-              <!-- Rendered dynamically -->
-            </tbody>
-          </table>
+    <!-- QUIZ WORKSPACE MODAL OVERLAY -->
+    <div class="modal-overlay" id="quiz-workspace">
+      <div class="modal-content">
+        <div class="workspace-header">
+          <div>
+            <span
+              class="badge badge-info"
+              id="workspace-subject"
+              style="margin-bottom: 0.5rem"
+              >Subject</span
+            >
+            <div class="workspace-title" id="workspace-title">Quiz Title</div>
+          </div>
+          <div class="difficulty-bar">
+            <i data-feather="sliders" style="width: 16px; height: 16px"></i>
+            <span
+              >Target Difficulty:
+              <strong id="workspace-diff-val" style="color: var(--accent)"
+                >0.50</strong
+              ></span
+            >
+          </div>
         </div>
-      </div>
-    </section>
 
-    <!-- NOTIFICATIONS PANEL -->
-    <section class="panel" id="panel-notifications">
-      <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-          <h3 style="font-size: 18px; font-weight: 700;">Notification Inbox</h3>
-          <button class="btn btn-secondary" style="width: auto; padding: 0.5rem 1rem; font-size: 13px;" onclick="markAllNotificationsRead()">
-            Mark All as Read
+        <!-- Live Question View -->
+        <div id="quiz-question-view">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              font-size: 13px;
+              color: var(--text-muted);
+              margin-bottom: 1rem;
+            "
+          >
+            <span id="workspace-question-index">Question -- of --</span>
+            <span id="workspace-question-type">Multiple Choice</span>
+          </div>
+
+          <div class="question-box" id="workspace-question-text">
+            Loading next question...
+          </div>
+
+          <!-- Choices Option Grid -->
+          <div class="options-grid" id="workspace-options"></div>
+
+          <!-- Text Input (For Short Answers) -->
+          <textarea
+            class="input-text"
+            id="workspace-text-input"
+            placeholder="Type your response here..."
+            style="display: none"
+          ></textarea>
+
+          <!-- Feedback Box -->
+          <div class="feedback-box" id="workspace-feedback">
+            <div class="feedback-header" id="feedback-title">
+              <i
+                data-feather="check-circle"
+                style="width: 20px; height: 20px"
+              ></i>
+              Correct
+            </div>
+            <div class="feedback-body" id="feedback-text">Explanation...</div>
+          </div>
+
+          <!-- Actions -->
+          <button
+            class="btn btn-primary"
+            id="workspace-action-btn"
+            onclick="handleWorkspaceAction()"
+          >
+            Submit Answer
           </button>
         </div>
-        <div id="notifications-container">
+
+        <!-- Live Complete Summary View -->
+        <div id="quiz-complete-view" style="display: none; text-align: center">
+          <h2
+            style="font-size: 26px; font-weight: 800; margin-bottom: 1.5rem"
+            id="complete-outcome-title"
+          >
+            Attempt Finished!
+          </h2>
+
+          <div
+            style="
+              width: 140px;
+              height: 140px;
+              border-radius: 50%;
+              margin: 0 auto 2rem;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              border: 4px solid var(--accent);
+              background: rgba(99, 102, 241, 0.05);
+            "
+          >
+            <span style="font-size: 32px; font-weight: 800" id="complete-score"
+              >0%</span
+            >
+            <span
+              style="
+                font-size: 12px;
+                color: var(--text-muted);
+                text-transform: uppercase;
+              "
+              id="complete-status-label"
+              >Passed</span
+            >
+          </div>
+
+          <div
+            class="card"
+            style="
+              text-align: left;
+              margin-bottom: 2rem;
+              background: rgba(255, 255, 255, 0.02);
+            "
+          >
+            <h4
+              style="
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--text-muted);
+                margin-bottom: 0.5rem;
+                text-transform: uppercase;
+              "
+            >
+              🤖 AI Performance Insight
+            </h4>
+            <p
+              id="complete-insight-summary"
+              style="font-size: 14px; line-height: 1.6; color: var(--text-main)"
+            >
+              Analyzing performance...
+            </p>
+          </div>
+
+          <button class="btn btn-primary" onclick="closeWorkspace()">
+            Return to Dashboard
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ATTEMPT DETAILS MODAL -->
+    <div class="modal-overlay" id="detail-workspace">
+      <div class="modal-content" style="max-width: 760px">
+        <div class="workspace-header">
+          <div>
+            <div class="workspace-title" id="detail-title">
+              Attempt History Detail
+            </div>
+            <div
+              style="
+                font-size: 13px;
+                color: var(--text-muted);
+                margin-top: 0.25rem;
+              "
+              id="detail-meta"
+            >
+              Quiz Date & Outcome
+            </div>
+          </div>
+          <button
+            class="btn btn-secondary"
+            style="width: auto; padding: 0.5rem 1rem"
+            onclick="closeDetailWorkspace()"
+          >
+            Close
+          </button>
+        </div>
+
+        <div
+          style="
+            max-height: 480px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+          "
+          id="detail-questions-container"
+        >
           <!-- Rendered dynamically -->
         </div>
       </div>
-    </section>
-  </main>
-
-  <!-- QUIZ WORKSPACE MODAL OVERLAY -->
-  <div class="modal-overlay" id="quiz-workspace">
-    <div class="modal-content">
-      <div class="workspace-header">
-        <div>
-          <span class="badge badge-info" id="workspace-subject" style="margin-bottom: 0.5rem;">Subject</span>
-          <div class="workspace-title" id="workspace-title">Quiz Title</div>
-        </div>
-        <div class="difficulty-bar">
-          <i data-feather="sliders" style="width: 16px; height: 16px;"></i>
-          <span>Target Difficulty: <strong id="workspace-diff-val" style="color: var(--accent);">0.50</strong></span>
-        </div>
-      </div>
-
-      <!-- Live Question View -->
-      <div id="quiz-question-view">
-        <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-bottom: 1rem;">
-          <span id="workspace-question-index">Question -- of --</span>
-          <span id="workspace-question-type">Multiple Choice</span>
-        </div>
-        
-        <div class="question-box" id="workspace-question-text">
-          Loading next question...
-        </div>
-
-        <!-- Choices Option Grid -->
-        <div class="options-grid" id="workspace-options"></div>
-
-        <!-- Text Input (For Short Answers) -->
-        <textarea class="input-text" id="workspace-text-input" placeholder="Type your response here..." style="display: none;"></textarea>
-
-        <!-- Feedback Box -->
-        <div class="feedback-box" id="workspace-feedback">
-          <div class="feedback-header" id="feedback-title">
-            <i data-feather="check-circle" style="width: 20px; height: 20px;"></i>
-            Correct
-          </div>
-          <div class="feedback-body" id="feedback-text">
-            Explanation...
-          </div>
-        </div>
-
-        <!-- Actions -->
-        <button class="btn btn-primary" id="workspace-action-btn" onclick="handleWorkspaceAction()">Submit Answer</button>
-      </div>
-
-      <!-- Live Complete Summary View -->
-      <div id="quiz-complete-view" style="display: none; text-align: center;">
-        <h2 style="font-size: 26px; font-weight: 800; margin-bottom: 1.5rem;" id="complete-outcome-title">Attempt Finished!</h2>
-        
-        <div style="width: 140px; height: 140px; border-radius: 50%; margin: 0 auto 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 4px solid var(--accent); background: rgba(99, 102, 241, 0.05);">
-          <span style="font-size: 32px; font-weight: 800;" id="complete-score">0%</span>
-          <span style="font-size: 12px; color: var(--text-muted); text-transform: uppercase;" id="complete-status-label">Passed</span>
-        </div>
-
-        <div class="card" style="text-align: left; margin-bottom: 2rem; background: rgba(255, 255, 255, 0.02);">
-          <h4 style="font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase;">🤖 AI Performance Insight</h4>
-          <p id="complete-insight-summary" style="font-size: 14px; line-height: 1.6; color: var(--text-main);">Analyzing performance...</p>
-        </div>
-
-        <button class="btn btn-primary" onclick="closeWorkspace()">Return to Dashboard</button>
-      </div>
     </div>
-  </div>
 
-  <!-- ATTEMPT DETAILS MODAL -->
-  <div class="modal-overlay" id="detail-workspace">
-    <div class="modal-content" style="max-width: 760px;">
-      <div class="workspace-header">
-        <div>
-          <div class="workspace-title" id="detail-title">Attempt History Detail</div>
-          <div style="font-size: 13px; color: var(--text-muted); margin-top: 0.25rem;" id="detail-meta">Quiz Date & Outcome</div>
-        </div>
-        <button class="btn btn-secondary" style="width: auto; padding: 0.5rem 1rem;" onclick="closeDetailWorkspace()">Close</button>
-      </div>
+    <script>
+      let activeTab = 'dashboard';
+      let currentAttempt = null;
+      let currentQuestion = null;
+      let selectedOption = null;
+      let quizState = 'answering'; // answering | feedback
 
-      <div style="max-height: 480px; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem;" id="detail-questions-container">
-        <!-- Rendered dynamically -->
-      </div>
-    </div>
-  </div>
+      document.addEventListener('DOMContentLoaded', () => {
+        feather.replace();
 
-  <script>
-    let activeTab = 'dashboard';
-    let currentAttempt = null;
-    let currentQuestion = null;
-    let selectedOption = null;
-    let quizState = 'answering'; // answering | feedback
+        // Initialize initials logo
+        const firstName = '<%= user.firstName %>';
+        const lastName = '<%= user.lastName %>';
+        if (firstName && lastName) {
+          document.getElementById('avatar-letters').textContent = (
+            firstName[0] + lastName[0]
+          ).toUpperCase();
+        }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      feather.replace();
-      
-      // Initialize initials logo
-      const firstName = "<%= user.firstName %>";
-      const lastName = "<%= user.lastName %>";
-      if (firstName && lastName) {
-        document.getElementById('avatar-letters').textContent = (firstName[0] + lastName[0]).toUpperCase();
-      }
-
-      loadDashboardData();
-      loadUnreadCount();
-    });
-
-    function logout() {
-      fetch('/auth/logout', { method: 'POST' })
-        .then(() => window.location.href = '/login');
-    }
-
-    function switchTab(tabName) {
-      activeTab = tabName;
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
-
-      document.getElementById(`tab-${tabName}`).classList.add('active');
-      document.getElementById(`panel-${tabName}`).classList.add('active');
-
-      if (tabName === 'dashboard') {
         loadDashboardData();
-      } else if (tabName === 'quizzes') {
-        loadQuizzes();
-      } else if (tabName === 'history') {
-        loadHistory();
-      } else if (tabName === 'notifications') {
-        loadNotifications();
-      }
-    }
+        loadUnreadCount();
+      });
 
-    // Helper Spinner Render
-    function renderSpinner(containerId, text = 'Loading...') {
-      const el = document.getElementById(containerId);
-      if (el) {
-        el.innerHTML = `
+      function logout() {
+        fetch('/auth/logout', { method: 'POST' }).then(
+          () => (window.location.href = '/login'),
+        );
+      }
+
+      function switchTab(tabName) {
+        activeTab = tabName;
+        document
+          .querySelectorAll('.tab-btn')
+          .forEach((btn) => btn.classList.remove('active'));
+        document
+          .querySelectorAll('.panel')
+          .forEach((panel) => panel.classList.remove('active'));
+
+        document.getElementById(`tab-${tabName}`).classList.add('active');
+        document.getElementById(`panel-${tabName}`).classList.add('active');
+
+        if (tabName === 'dashboard') {
+          loadDashboardData();
+        } else if (tabName === 'quizzes') {
+          loadQuizzes();
+        } else if (tabName === 'history') {
+          loadHistory();
+        } else if (tabName === 'notifications') {
+          loadNotifications();
+        }
+      }
+
+      // Helper Spinner Render
+      function renderSpinner(containerId, text = 'Loading...') {
+        const el = document.getElementById(containerId);
+        if (el) {
+          el.innerHTML = `
           <div class="loader-container">
             <div class="spinner"></div>
             <div style="font-size: 13px; color: var(--text-muted);">${text}</div>
           </div>
         `;
+        }
       }
-    }
 
-    function renderTableSpinner(tbodyId, cols, text = 'Loading data...') {
-      const el = document.getElementById(tbodyId);
-      if (el) {
-        el.innerHTML = `
+      function renderTableSpinner(tbodyId, cols, text = 'Loading data...') {
+        const el = document.getElementById(tbodyId);
+        if (el) {
+          el.innerHTML = `
           <tr>
             <td colspan="${cols}" style="text-align: center; padding: 2rem;">
               <div class="loader-container" style="padding: 1rem 0;">
@@ -562,107 +1171,118 @@
             </td>
           </tr>
         `;
+        }
       }
-    }
 
-    // ─── DASHBOARD WORKSPACE LOGIC ───
-    async function loadDashboardData() {
-      // Place spinners
-      renderTableSpinner('dashboard-recent-tbody', 4, 'Fetching recent activity...');
-      renderSpinner('profile-strengths', 'Loading strengths...');
-      renderSpinner('profile-weaknesses', 'Loading weaknesses...');
+      // ─── DASHBOARD WORKSPACE LOGIC ───
+      async function loadDashboardData() {
+        // Place spinners
+        renderTableSpinner(
+          'dashboard-recent-tbody',
+          4,
+          'Fetching recent activity...',
+        );
+        renderSpinner('profile-strengths', 'Loading strengths...');
+        renderSpinner('profile-weaknesses', 'Loading weaknesses...');
 
-      try {
-        const response = await fetch('/dashboard/student');
-        if (!response.ok) throw new Error();
-        const data = await response.json();
+        try {
+          const response = await fetch('/dashboard/student');
+          if (!response.ok) throw new Error();
+          const data = await response.json();
 
-        // Populate Stats
-        document.getElementById('stats-completed').textContent = data.stats.completedAttempts;
-        document.getElementById('stats-avg').textContent = `${data.stats.avgScore}%`;
-        document.getElementById('stats-rate').textContent = `${data.stats.passRate}%`;
-        document.getElementById('stats-pref').textContent = data.performanceProfile.preferredDifficulty;
+          // Populate Stats
+          document.getElementById('stats-completed').textContent =
+            data.stats.completedAttempts;
+          document.getElementById('stats-avg').textContent =
+            `${data.stats.avgScore || 0}%`;
+          document.getElementById('stats-rate').textContent =
+            `${data.stats.passRate || 0}%`;
+          document.getElementById('stats-pref').textContent =
+            data.performanceProfile.preferredDifficulty;
 
-        // Populate Strengths
-        const strengthsDiv = document.getElementById('profile-strengths');
-        strengthsDiv.innerHTML = '';
-        if (data.performanceProfile.strengths.length === 0) {
-          strengthsDiv.innerHTML = '<span class="pill">None identified yet</span>';
-        } else {
-          data.performanceProfile.strengths.forEach(s => {
-            strengthsDiv.innerHTML += `<span class="pill pill-strength">${s}</span>`;
-          });
-        }
+          // Populate Strengths
+          const strengthsDiv = document.getElementById('profile-strengths');
+          strengthsDiv.innerHTML = '';
+          if (data.performanceProfile.strengths.length === 0) {
+            strengthsDiv.innerHTML =
+              '<span class="pill">None identified yet</span>';
+          } else {
+            data.performanceProfile.strengths.forEach((s) => {
+              strengthsDiv.innerHTML += `<span class="pill pill-strength">${s}</span>`;
+            });
+          }
 
-        // Populate Weaknesses
-        const weaknessesDiv = document.getElementById('profile-weaknesses');
-        weaknessesDiv.innerHTML = '';
-        if (data.performanceProfile.weaknesses.length === 0) {
-          weaknessesDiv.innerHTML = '<span class="pill">None identified yet</span>';
-        } else {
-          data.performanceProfile.weaknesses.forEach(w => {
-            weaknessesDiv.innerHTML += `<span class="pill pill-weakness">${w}</span>`;
-          });
-        }
+          // Populate Weaknesses
+          const weaknessesDiv = document.getElementById('profile-weaknesses');
+          weaknessesDiv.innerHTML = '';
+          if (data.performanceProfile.weaknesses.length === 0) {
+            weaknessesDiv.innerHTML =
+              '<span class="pill">None identified yet</span>';
+          } else {
+            data.performanceProfile.weaknesses.forEach((w) => {
+              weaknessesDiv.innerHTML += `<span class="pill pill-weakness">${w}</span>`;
+            });
+          }
 
-        // Recent attempts tbody
-        const tbody = document.getElementById('dashboard-recent-tbody');
-        tbody.innerHTML = '';
-        if (data.recentAttempts.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent activities.</td></tr>';
-        } else {
-          data.recentAttempts.forEach(a => {
-            const statusBadge = a.passed
-              ? '<span class="badge badge-success">Passed</span>'
-              : '<span class="badge badge-error">Failed</span>';
-            const date = new Date(a.completedAt).toLocaleDateString();
+          // Recent attempts tbody
+          const tbody = document.getElementById('dashboard-recent-tbody');
+          tbody.innerHTML = '';
+          if (data.recentAttempts.length === 0) {
+            tbody.innerHTML =
+              '<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent activities.</td></tr>';
+          } else {
+            data.recentAttempts.forEach((a) => {
+              const statusBadge = a.passed
+                ? '<span class="badge badge-success">Passed</span>'
+                : '<span class="badge badge-error">Failed</span>';
+              const date = new Date(a.completedAt).toLocaleDateString();
 
-            tbody.innerHTML += `
+              tbody.innerHTML += `
               <tr>
                 <td><strong>${a.quiz?.title || 'Unknown Quiz'}</strong><div style="font-size:12px; color:var(--text-muted);">${a.quiz?.subject || ''}</div></td>
-                <td><strong>${a.score.toFixed(1)}%</strong></td>
+                <td><strong>${a.score?.toFixed(1) || 0}%</strong></td>
                 <td>${statusBadge}</td>
                 <td>${date}</td>
               </tr>
             `;
-          });
+            });
+          }
+        } catch (err) {
+          console.error('Failed to load student dashboard data:', err);
         }
-
-      } catch (err) {
-        console.error('Failed to load student dashboard data:', err);
       }
-    }
 
-    // ─── QUIZZES WORKSPACE LOGIC ───
-    async function loadQuizzes() {
-      renderSpinner('quizzes-container', 'Fetching available quizzes...');
+      // ─── QUIZZES WORKSPACE LOGIC ───
+      async function loadQuizzes() {
+        renderSpinner('quizzes-container', 'Fetching available quizzes...');
 
-      try {
-        const search = document.getElementById('filter-search').value;
-        const difficulty = document.getElementById('filter-difficulty').value;
+        try {
+          const search = document.getElementById('filter-search').value;
+          const difficulty = document.getElementById('filter-difficulty').value;
 
-        const url = new URL('/quizzes', window.location.origin);
-        if (search) url.searchParams.append('search', search);
-        if (difficulty) url.searchParams.append('difficulty', difficulty);
+          const url = new URL('/quizzes', window.location.origin);
+          if (search) url.searchParams.append('search', search);
+          if (difficulty) url.searchParams.append('difficulty', difficulty);
 
-        const response = await fetch(url);
-        if (!response.ok) throw new Error();
-        const quizzes = await response.json();
+          const response = await fetch(url);
+          if (!response.ok) throw new Error();
+          const quizzes = await response.json();
 
-        const container = document.getElementById('quizzes-container');
-        container.innerHTML = '';
+          const container = document.getElementById('quizzes-container');
+          container.innerHTML = '';
 
-        if (quizzes.length === 0) {
-          container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem;">No quizzes matching filters were found.</div>';
-          return;
-        }
+          if (quizzes.length === 0) {
+            container.innerHTML =
+              '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem;">No quizzes matching filters were found.</div>';
+            return;
+          }
 
-        quizzes.forEach(q => {
-          const typeBadge = q.isAdaptive 
-            ? '<span class="badge badge-info">Adaptive AI</span>' 
-            : '<span class="badge badge-warning">Static Standard</span>';
-          
-          container.innerHTML += `
+          quizzes.forEach((q) => {
+            const typeBadge = q.isAdaptive
+              ? '<span class="badge badge-info">Adaptive AI</span>'
+              : '<span class="badge badge-warning">Static Standard</span>';
+
+            container.innerHTML += `
             <div class="quiz-card">
               <div>
                 <div class="quiz-subject">${q.subject}</div>
@@ -680,275 +1300,336 @@
               </div>
             </div>
           `;
-        });
-        feather.replace();
-
-      } catch (err) {
-        console.error('Failed to load quizzes list:', err);
-      }
-    }
-
-    // ─── QUIZ ATTEMPTS LIFECYCLE ───
-    async function startQuizAttempt(quizId) {
-      // Toggle a loader in workspace modal or alert during start
-      renderSpinner('quizzes-container', 'Initializing quiz session...');
-
-      try {
-        const response = await fetch('/quiz-attempts/start', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ quizId }),
-        });
-        if (!response.ok) throw new Error('Could not start attempt');
-        const attempt = await response.json();
-
-        currentAttempt = {
-          id: attempt.attempt.id,
-          quiz: attempt.attempt.quiz,
-          currentDifficultyScore: attempt.attempt.currentDifficultyScore,
-          nextQuestion: attempt.nextQuestion,
-          currentIndex: attempt.attempt.answeredQuestions
-        };
-        openQuizWorkspace();
-
-      } catch (err) {
-        alert(err.message || 'Error starting quiz attempt');
-        loadQuizzes(); // Refresh list to remove loader
-      }
-    }
-
-    function openQuizWorkspace() {
-      document.getElementById('quiz-workspace').classList.add('active');
-      document.getElementById('quiz-question-view').style.display = 'block';
-      document.getElementById('quiz-complete-view').style.display = 'none';
-
-      // Set headers
-      document.getElementById('workspace-title').textContent = currentAttempt.quiz.title;
-      document.getElementById('workspace-subject').textContent = currentAttempt.quiz.subject;
-      document.getElementById('workspace-diff-val').textContent = currentAttempt.currentDifficultyScore.toFixed(2);
-      
-      // Load first question details
-      renderCurrentQuestion(currentAttempt.nextQuestion, currentAttempt.currentIndex + 1);
-    }
-
-    function renderCurrentQuestion(question, questionIndex) {
-      if (!question) {
-        completeQuizAttempt();
-        return;
+          });
+          feather.replace();
+        } catch (err) {
+          console.error('Failed to load quizzes list:', err);
+        }
       }
 
-      currentQuestion = question;
-      selectedOption = null;
-      quizState = 'answering';
+      // ─── QUIZ ATTEMPTS LIFECYCLE ───
+      async function startQuizAttempt(quizId) {
+        // Toggle a loader in workspace modal or alert during start
+        renderSpinner('quizzes-container', 'Initializing quiz session...');
 
-      // Set titles
-      document.getElementById('workspace-question-index').textContent = `Question ${questionIndex} of ${currentAttempt.quiz.totalQuestions}`;
-      
-      let typeLabel = 'Short Answer';
-      if (question.type === 'multiple_choice' || question.type === 'mcq') typeLabel = 'Multiple Choice';
-      if (question.type === 'true_false' || question.type === 'tf') typeLabel = 'True / False';
-      document.getElementById('workspace-question-type').textContent = typeLabel;
-      
-      document.getElementById('workspace-question-text').textContent = question.text;
+        try {
+          const response = await fetch('/quiz-attempts/start', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ quizId }),
+          });
+          if (!response.ok) throw new Error('Could not start attempt');
+          const attempt = await response.json();
 
-      // Toggle panels
-      const optionsGrid = document.getElementById('workspace-options');
-      const textInput = document.getElementById('workspace-text-input');
-      const feedbackBox = document.getElementById('workspace-feedback');
-      const actionBtn = document.getElementById('workspace-action-btn');
+          currentAttempt = {
+            id: attempt.attempt.id,
+            quiz: attempt.attempt.quiz,
+            currentDifficultyScore: attempt.attempt.currentDifficultyScore,
+            nextQuestion: attempt.nextQuestion,
+            currentIndex: attempt.attempt.answeredQuestions,
+          };
+          openQuizWorkspace();
+        } catch (err) {
+          alert(err.message || 'Error starting quiz attempt');
+          loadQuizzes(); // Refresh list to remove loader
+        }
+      }
 
-      feedbackBox.style.display = 'none';
-      actionBtn.textContent = 'Submit Answer';
-      actionBtn.className = 'btn btn-primary';
+      function openQuizWorkspace() {
+        document.getElementById('quiz-workspace').classList.add('active');
+        document.getElementById('quiz-question-view').style.display = 'block';
+        document.getElementById('quiz-complete-view').style.display = 'none';
 
-      if (question.type === 'multiple_choice' || question.type === 'mcq' || question.type === 'true_false' || question.type === 'tf') {
-        textInput.style.display = 'none';
-        optionsGrid.style.display = 'flex';
-        optionsGrid.innerHTML = '';
+        // Set headers
+        document.getElementById('workspace-title').textContent =
+          currentAttempt.quiz.title;
+        document.getElementById('workspace-subject').textContent =
+          currentAttempt.quiz.subject;
+        document.getElementById('workspace-diff-val').textContent =
+          currentAttempt.currentDifficultyScore?.toFixed(2);
 
-        const opts = typeof question.options === 'string' 
-          ? JSON.parse(question.options) 
-          : question.options;
+        // Load first question details
+        renderCurrentQuestion(
+          currentAttempt.nextQuestion,
+          currentAttempt.currentIndex + 1,
+        );
+      }
 
-        const labels = ['A', 'B', 'C', 'D'];
-        opts.forEach((o, index) => {
-          const val = typeof o === 'object' ? o.text : o;
-          optionsGrid.innerHTML += `
+      function renderCurrentQuestion(question, questionIndex) {
+        if (!question) {
+          completeQuizAttempt();
+          return;
+        }
+
+        currentQuestion = question;
+        selectedOption = null;
+        quizState = 'answering';
+
+        // Set titles
+        document.getElementById('workspace-question-index').textContent =
+          `Question ${questionIndex} of ${currentAttempt.quiz.totalQuestions}`;
+
+        let typeLabel = 'Short Answer';
+        if (question.type === 'multiple_choice' || question.type === 'mcq')
+          typeLabel = 'Multiple Choice';
+        if (question.type === 'true_false' || question.type === 'tf')
+          typeLabel = 'True / False';
+        document.getElementById('workspace-question-type').textContent =
+          typeLabel;
+
+        document.getElementById('workspace-question-text').textContent =
+          question.text;
+
+        // Toggle panels
+        const optionsGrid = document.getElementById('workspace-options');
+        const textInput = document.getElementById('workspace-text-input');
+        const feedbackBox = document.getElementById('workspace-feedback');
+        const actionBtn = document.getElementById('workspace-action-btn');
+
+        feedbackBox.style.display = 'none';
+        actionBtn.textContent = 'Submit Answer';
+        actionBtn.className = 'btn btn-primary';
+
+        if (
+          question.type === 'multiple_choice' ||
+          question.type === 'mcq' ||
+          question.type === 'true_false' ||
+          question.type === 'tf'
+        ) {
+          textInput.style.display = 'none';
+          optionsGrid.style.display = 'flex';
+          optionsGrid.innerHTML = '';
+
+          const opts =
+            typeof question.options === 'string'
+              ? JSON.parse(question.options)
+              : question.options;
+
+          const labels = ['A', 'B', 'C', 'D'];
+          opts.forEach((o, index) => {
+            const val = typeof o === 'object' ? o.text : o;
+            optionsGrid.innerHTML += `
             <div class="option-card" id="opt-${index}" onclick="selectOption(${index}, '${val}')">
               <div class="option-bullet">${labels[index] || index + 1}</div>
               <div>${val}</div>
             </div>
           `;
-        });
-      } else {
-        optionsGrid.style.display = 'none';
-        textInput.style.display = 'block';
-        textInput.value = '';
-      }
-    }
-
-    function selectOption(index, val) {
-      if (quizState !== 'answering') return;
-      selectedOption = val;
-
-      document.querySelectorAll('.option-card').forEach(card => card.classList.remove('selected'));
-      document.getElementById(`opt-${index}`).classList.add('selected');
-    }
-
-    async function handleWorkspaceAction() {
-      const actionBtn = document.getElementById('workspace-action-btn');
-      
-      if (quizState === 'answering') {
-        // Prepare answer
-        let answer = '';
-        if (currentQuestion.type === 'multiple_choice' || currentQuestion.type === 'mcq' || currentQuestion.type === 'true_false' || currentQuestion.type === 'tf') {
-          if (!selectedOption) {
-            alert('Please select an option first!');
-            return;
-          }
-          answer = selectedOption;
-        } else {
-          answer = document.getElementById('workspace-text-input').value.trim();
-          if (!answer) {
-            alert('Please type a response first!');
-            return;
-          }
-        }
-
-        actionBtn.disabled = true;
-        actionBtn.innerHTML = `<span style="display:inline-flex; align-items:center; gap:0.5rem; justify-content:center; width:100%;"><div class="spinner" style="width:16px; height:16px; border-width:2px; border-top-color:#fff; animation:spin 1s linear infinite; margin:0;"></div> Grading...</span>`;
-
-        try {
-          const response = await fetch(`/quiz-attempts/${currentAttempt.id}/answer`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ questionId: currentQuestion.id, userAnswer: answer }),
           });
-          if (!response.ok) throw new Error('Failed to submit answer');
-          const result = await response.json();
+        } else {
+          optionsGrid.style.display = 'none';
+          textInput.style.display = 'block';
+          textInput.value = '';
+        }
+      }
 
-          // Render feedback
-          quizState = 'feedback';
-          actionBtn.disabled = false;
-          actionBtn.textContent = 'Continue';
-          actionBtn.className = 'btn btn-secondary';
+      function selectOption(index, val) {
+        if (quizState !== 'answering') return;
+        selectedOption = val;
 
-          const feedbackBox = document.getElementById('workspace-feedback');
-          const feedbackTitle = document.getElementById('feedback-title');
-          const feedbackText = document.getElementById('feedback-text');
+        document
+          .querySelectorAll('.option-card')
+          .forEach((card) => card.classList.remove('selected'));
+        document.getElementById(`opt-${index}`).classList.add('selected');
+      }
 
-          feedbackBox.className = result.isCorrect ? 'feedback-box correct' : 'feedback-box incorrect';
-          
-          feedbackTitle.innerHTML = result.isCorrect 
-            ? '<i data-feather="check-circle" style="width:20px;height:20px;stroke:#10b981;"></i> Correct!' 
-            : '<i data-feather="x-circle" style="width:20px;height:20px;stroke:#ef4444;"></i> Incorrect';
-          
-          const expText = result.explanation || 'Good effort!';
-          const diffChange = result.nextDifficultyScore > currentAttempt.currentDifficultyScore
-            ? `Difficulty increased to <strong>${result.nextDifficultyScore.toFixed(2)}</strong>`
-            : result.nextDifficultyScore < currentAttempt.currentDifficultyScore
-              ? `Difficulty adjusted down to <strong>${result.nextDifficultyScore.toFixed(2)}</strong>`
-              : `Difficulty maintained at <strong>${result.nextDifficultyScore.toFixed(2)}</strong>`;
+      async function handleWorkspaceAction() {
+        const actionBtn = document.getElementById('workspace-action-btn');
 
-          feedbackText.innerHTML = `
+        if (quizState === 'answering') {
+          // Prepare answer
+          let answer = '';
+          if (
+            currentQuestion.type === 'multiple_choice' ||
+            currentQuestion.type === 'mcq' ||
+            currentQuestion.type === 'true_false' ||
+            currentQuestion.type === 'tf'
+          ) {
+            if (!selectedOption) {
+              alert('Please select an option first!');
+              return;
+            }
+            answer = selectedOption;
+          } else {
+            answer = document
+              .getElementById('workspace-text-input')
+              .value.trim();
+            if (!answer) {
+              alert('Please type a response first!');
+              return;
+            }
+          }
+
+          actionBtn.disabled = true;
+          actionBtn.innerHTML = `<span style="display:inline-flex; align-items:center; gap:0.5rem; justify-content:center; width:100%;"><div class="spinner" style="width:16px; height:16px; border-width:2px; border-top-color:#fff; animation:spin 1s linear infinite; margin:0;"></div> Grading...</span>`;
+
+          try {
+            const response = await fetch(
+              `/quiz-attempts/${currentAttempt.id}/answer`,
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  questionId: currentQuestion.id,
+                  answer: answer,
+                }),
+              },
+            );
+            if (!response.ok) throw new Error('Failed to submit answer');
+            const result = await response.json();
+
+            // Render feedback
+            quizState = 'feedback';
+            actionBtn.disabled = false;
+            actionBtn.textContent = 'Continue';
+            actionBtn.className = 'btn btn-secondary';
+
+            const feedbackBox = document.getElementById('workspace-feedback');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackText = document.getElementById('feedback-text');
+
+            feedbackBox.className = result.isCorrect
+              ? 'feedback-box correct'
+              : 'feedback-box incorrect';
+
+            feedbackTitle.innerHTML = result.isCorrect
+              ? '<i data-feather="check-circle" style="width:20px;height:20px;stroke:#10b981;"></i> Correct!'
+              : '<i data-feather="x-circle" style="width:20px;height:20px;stroke:#ef4444;"></i> Incorrect';
+
+            const expText = result.explanation || 'Good effort!';
+            const diffChange =
+              result.nextDifficultyScore > currentAttempt.currentDifficultyScore
+                ? `Difficulty increased to <strong>${result.nextDifficultyScore?.toFixed(2)}</strong>`
+                : result.nextDifficultyScore <
+                    currentAttempt.currentDifficultyScore
+                  ? `Difficulty adjusted down to <strong>${result.nextDifficultyScore?.toFixed(2)}</strong>`
+                  : `Difficulty maintained at <strong>${result.nextDifficultyScore?.toFixed(2)}</strong>`;
+
+            feedbackText.innerHTML = `
             <div style="margin-bottom:0.75rem;">${expText}</div>
             <div style="font-size:12px; color:var(--text-muted); border-top:1px solid rgba(255,255,255,0.05); padding-top:0.5rem; display:flex; align-items:center; gap:0.5rem;">
               <i data-feather="sliders" style="width:14px;height:14px;"></i> ${diffChange}
             </div>
           `;
-          
-          // Update local attempt context
-          currentAttempt.currentDifficultyScore = result.nextDifficultyScore;
-          currentAttempt.nextQuestion = result.nextQuestion;
-          currentAttempt.currentIndex++;
 
-          document.getElementById('workspace-diff-val').textContent = result.nextDifficultyScore.toFixed(2);
-          feather.replace();
+            // Update local attempt context
+            currentAttempt.currentDifficultyScore = result.nextDifficultyScore;
+            currentAttempt.nextQuestion = result.nextQuestion;
+            currentAttempt.currentIndex++;
 
-        } catch (err) {
-          actionBtn.disabled = false;
-          actionBtn.textContent = 'Submit Answer';
-          alert(err.message || 'Error submitting answer');
+            document.getElementById('workspace-diff-val').textContent =
+              result.nextDifficultyScore?.toFixed(2);
+            feather.replace();
+          } catch (err) {
+            actionBtn.disabled = false;
+            actionBtn.textContent = 'Submit Answer';
+            alert(err.message || 'Error submitting answer');
+          }
+        } else {
+          // Move to next question or complete
+          renderCurrentQuestion(
+            currentAttempt.nextQuestion,
+            currentAttempt.currentIndex + 1,
+          );
         }
-      } else {
-        // Move to next question or complete
-        renderCurrentQuestion(currentAttempt.nextQuestion, currentAttempt.currentIndex + 1);
       }
-    }
 
-    async function completeQuizAttempt() {
-      // Show loader in final workspace view
-      document.getElementById('quiz-question-view').style.display = 'none';
-      document.getElementById('quiz-complete-view').style.display = 'block';
-      document.getElementById('complete-outcome-title').textContent = 'Grading Attempt...';
-      document.getElementById('complete-score').textContent = '...';
-      document.getElementById('complete-insight-summary').innerHTML = `
+      async function completeQuizAttempt() {
+        // Show loader in final workspace view
+        document.getElementById('quiz-question-view').style.display = 'none';
+        document.getElementById('quiz-complete-view').style.display = 'block';
+        document.getElementById('complete-outcome-title').textContent =
+          'Grading Attempt...';
+        document.getElementById('complete-score').textContent = '...';
+        document.getElementById('complete-insight-summary').innerHTML = `
         <div class="loader-container" style="padding: 1rem 0;">
           <div class="spinner" style="width: 32px; height: 32px;"></div>
           <div>Generating adaptive recommendations & grading...</div>
         </div>
       `;
 
-      try {
-        const response = await fetch(`/quiz-attempts/${currentAttempt.id}/complete`, { method: 'POST' });
-        if (!response.ok) throw new Error();
-        const result = await response.json();
+        try {
+          const response = await fetch(
+            `/quiz-attempts/${currentAttempt.id}/complete`,
+            { method: 'POST' },
+          );
+          if (!response.ok) throw new Error();
+          const result = await response.json();
 
-        // Render outcomes
-        document.getElementById('complete-score').textContent = `${result.percentage.toFixed(1)}%`;
-        
-        const labelEl = document.getElementById('complete-status-label');
-        if (result.passed) {
-          labelEl.textContent = 'Passed';
-          labelEl.className = 'badge badge-success';
-          document.getElementById('complete-outcome-title').textContent = 'Passed! 🎉';
-        } else {
-          labelEl.textContent = 'Failed';
-          labelEl.className = 'badge badge-error';
-          document.getElementById('complete-outcome-title').textContent = 'Quiz Completed';
+          // Render outcomes
+          document.getElementById('complete-score').textContent =
+            `${result.percentage?.toFixed(1) || 0}%`;
+
+          const labelEl = document.getElementById('complete-status-label');
+          if (result.passed) {
+            labelEl.textContent = 'Passed';
+            labelEl.className = 'badge badge-success';
+            document.getElementById('complete-outcome-title').textContent =
+              'Passed! 🎉';
+          } else {
+            labelEl.textContent = 'Failed';
+            labelEl.className = 'badge badge-error';
+            document.getElementById('complete-outcome-title').textContent =
+              'Quiz Completed';
+          }
+
+          document.getElementById('complete-insight-summary').textContent =
+            result.summary || 'Well done on completing the adaptive challenge!';
+        } catch (err) {
+          document.getElementById('complete-outcome-title').textContent =
+            'Completion Error';
+          document.getElementById('complete-insight-summary').textContent =
+            'Failed to submit the final completion response. Please retry.';
         }
-
-        document.getElementById('complete-insight-summary').textContent = result.summary || 'Well done on completing the adaptive challenge!';
-
-      } catch (err) {
-        document.getElementById('complete-outcome-title').textContent = 'Completion Error';
-        document.getElementById('complete-insight-summary').textContent = 'Failed to submit the final completion response. Please retry.';
       }
-    }
 
-    function closeWorkspace() {
-      document.getElementById('quiz-workspace').classList.remove('active');
-      currentAttempt = null;
-      currentQuestion = null;
-      switchTab('dashboard');
-    }
+      function closeWorkspace() {
+        document.getElementById('quiz-workspace').classList.remove('active');
+        currentAttempt = null;
+        currentQuestion = null;
+        switchTab('dashboard');
+      }
 
-    // ─── ATTEMPT HISTORY WORKSPACE ───
-    async function loadHistory() {
-      renderTableSpinner('history-tbody', 7, 'Fetching attempt logs...');
+      // ─── ATTEMPT HISTORY WORKSPACE ───
+      async function loadHistory() {
+        renderTableSpinner('history-tbody', 7, 'Fetching attempt logs...');
 
-      try {
-        const response = await fetch('/quiz-attempts/history');
-        if (!response.ok) throw new Error();
-        const attempts = await response.json();
+        try {
+          const response = await fetch('/quiz-attempts/history');
+          if (!response.ok) throw new Error();
+          const attempts = await response.json();
 
-        const tbody = document.getElementById('history-tbody');
-        tbody.innerHTML = '';
+          const tbody = document.getElementById('history-tbody');
+          tbody.innerHTML = '';
 
-        if (attempts.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">No historical attempts.</td></tr>';
-          return;
-        }
+          if (attempts.length === 0) {
+            tbody.innerHTML =
+              '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">No historical attempts.</td></tr>';
+            return;
+          }
 
-        attempts.forEach(a => {
-          const statusBadge = a.status === 'completed'
-            ? (a.passed ? '<span class="badge badge-success">Passed</span>' : '<span class="badge badge-error">Failed</span>')
-            : `<span class="badge badge-warning">${a.status}</span>`;
-          const score = a.percentage !== null ? `${a.percentage.toFixed(1)}%` : '--';
-          const reqPass = a.quiz?.passingScore ? `${a.quiz.passingScore}%` : '--';
-          const date = new Date(a.createdAt).toLocaleDateString() + ' ' + new Date(a.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          attempts.forEach((a) => {
+            const statusBadge =
+              a.status === 'completed'
+                ? a.passed
+                  ? '<span class="badge badge-success">Passed</span>'
+                  : '<span class="badge badge-error">Failed</span>'
+                : `<span class="badge badge-warning">${a.status}</span>`;
+            const score =
+              a.percentage !== null
+                ? `${a.percentage?.toFixed(1) || 0}%`
+                : '--';
+            const reqPass = a.quiz?.passingScore
+              ? `${a.quiz.passingScore || 0}%`
+              : '--';
+            const date =
+              new Date(a.createdAt).toLocaleDateString() +
+              ' ' +
+              new Date(a.createdAt).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              });
 
-          tbody.innerHTML += `
+            tbody.innerHTML += `
             <tr>
               <td><strong>${a.quiz?.title || 'Unknown Quiz'}</strong></td>
               <td>${a.quiz?.subject || '--'}</td>
@@ -963,44 +1644,52 @@
               </td>
             </tr>
           `;
-        });
-        feather.replace();
-
-      } catch (err) {
-        console.error('Failed to load history:', err);
+          });
+          feather.replace();
+        } catch (err) {
+          console.error('Failed to load history:', err);
+        }
       }
-    }
 
-    async function viewAttemptDetail(attemptId) {
-      document.getElementById('detail-title').textContent = 'Loading...';
-      document.getElementById('detail-meta').textContent = '';
-      renderSpinner('detail-questions-container', 'Fetching responses and explanation feedback...');
-      document.getElementById('detail-workspace').classList.add('active');
+      async function viewAttemptDetail(attemptId) {
+        document.getElementById('detail-title').textContent = 'Loading...';
+        document.getElementById('detail-meta').textContent = '';
+        renderSpinner(
+          'detail-questions-container',
+          'Fetching responses and explanation feedback...',
+        );
+        document.getElementById('detail-workspace').classList.add('active');
 
-      try {
-        const response = await fetch(`/quiz-attempts/${attemptId}/detail`);
-        if (!response.ok) throw new Error();
-        const data = await response.json();
+        try {
+          const response = await fetch(`/quiz-attempts/${attemptId}/detail`);
+          if (!response.ok) throw new Error();
+          const data = await response.json();
 
-        document.getElementById('detail-title').textContent = data.quiz?.title || 'Attempt details';
-        const dateStr = new Date(data.createdAt).toLocaleDateString();
-        document.getElementById('detail-meta').innerHTML = `
+          document.getElementById('detail-title').textContent =
+            data.quiz?.title || 'Attempt details';
+          const dateStr = new Date(data.createdAt).toLocaleDateString();
+          document.getElementById('detail-meta').innerHTML = `
           <span>Subject: <strong>${data.quiz?.subject || '--'}</strong></span> | 
-          <span>Score: <strong>${data.percentage !== null ? data.percentage.toFixed(1) : '0'}%</strong></span> | 
+          <span>Score: <strong>${data.percentage !== null ? data.percentage?.toFixed(1) : '0'}%</strong></span> | 
           <span>Date: <strong>${dateStr}</strong></span>
         `;
 
-        const container = document.getElementById('detail-questions-container');
-        container.innerHTML = '';
+          const container = document.getElementById(
+            'detail-questions-container',
+          );
+          container.innerHTML = '';
 
-        if (!data.answers || data.answers.length === 0) {
-          container.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--text-muted);">No responses recorded.</div>';
-        } else {
-          data.answers.forEach((ans, index) => {
-            const badgeClass = ans.isCorrect ? 'badge badge-success' : 'badge badge-error';
-            const badgeLabel = ans.isCorrect ? 'Correct' : 'Incorrect';
-            
-            container.innerHTML += `
+          if (!data.answers || data.answers.length === 0) {
+            container.innerHTML =
+              '<div style="text-align:center; padding:2rem; color:var(--text-muted);">No responses recorded.</div>';
+          } else {
+            data.answers.forEach((ans, index) => {
+              const badgeClass = ans.isCorrect
+                ? 'badge badge-success'
+                : 'badge badge-error';
+              const badgeLabel = ans.isCorrect ? 'Correct' : 'Incorrect';
+
+              container.innerHTML += `
               <div style="background:rgba(255,255,255,0.02); border:1px solid var(--card-border); padding:1.25rem; border-radius:12px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
                   <span style="font-weight:600; font-size:13px; color:var(--text-muted);">Question ${index + 1}</span>
@@ -1010,52 +1699,65 @@
                 <div style="font-size:14px; margin-bottom:0.5rem;">Your Answer: <strong style="color:${ans.isCorrect ? '#34d399' : '#f87171'}">${ans.userAnswer}</strong></div>
                 <div style="font-size:14px; color:var(--text-muted);">Correct Answer: <strong style="color:#34d399;">${ans.question?.correctAnswer || ''}</strong></div>
                 
-                ${ans.question?.explanation ? `
+                ${
+                  ans.question?.explanation
+                    ? `
                   <div style="margin-top:0.75rem; padding-top:0.75rem; border-top:1px solid rgba(255,255,255,0.05); font-size:13px; color:var(--text-muted); line-height:1.4;">
                     <strong>Explanation:</strong> ${ans.question.explanation}
                   </div>
-                ` : ''}
+                `
+                    : ''
+                }
               </div>
             `;
-          });
+            });
+          }
+        } catch (err) {
+          alert('Failed to load attempt details');
+          closeDetailWorkspace();
         }
-
-      } catch (err) {
-        alert('Failed to load attempt details');
-        closeDetailWorkspace();
       }
-    }
 
-    function closeDetailWorkspace() {
-      document.getElementById('detail-workspace').classList.remove('active');
-    }
+      function closeDetailWorkspace() {
+        document.getElementById('detail-workspace').classList.remove('active');
+      }
 
-    // ─── NOTIFICATIONS WORKSPACE ───
-    async function loadNotifications() {
-      renderSpinner('notifications-container', 'Checking for notifications...');
+      // ─── NOTIFICATIONS WORKSPACE ───
+      async function loadNotifications() {
+        renderSpinner(
+          'notifications-container',
+          'Checking for notifications...',
+        );
 
-      try {
-        const response = await fetch('/notifications');
-        if (!response.ok) throw new Error();
-        const notifications = await response.json();
+        try {
+          const response = await fetch('/notifications');
+          if (!response.ok) throw new Error();
+          const notifications = await response.json();
 
-        const container = document.getElementById('notifications-container');
-        container.innerHTML = '';
+          const container = document.getElementById('notifications-container');
+          container.innerHTML = '';
 
-        if (notifications.length === 0) {
-          container.innerHTML = '<div style="text-align:center; padding:3rem; color:var(--text-muted);">Your notification inbox is clean.</div>';
-          return;
-        }
+          if (notifications.length === 0) {
+            container.innerHTML =
+              '<div style="text-align:center; padding:3rem; color:var(--text-muted);">Your notification inbox is clean.</div>';
+            return;
+          }
 
-        notifications.forEach(n => {
-          const itemClass = n.isRead ? 'notif-item' : 'notif-item unread';
-          const markBtn = n.isRead
-            ? ''
-            : `<button class="btn btn-secondary" style="width:auto; padding:0.35rem 0.75rem; font-size:11px;" onclick="markNotificationRead(${n.id}, event)">Mark Read</button>`;
-          
-          const time = new Date(n.createdAt).toLocaleDateString() + ' ' + new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          notifications.forEach((n) => {
+            const itemClass = n.isRead ? 'notif-item' : 'notif-item unread';
+            const markBtn = n.isRead
+              ? ''
+              : `<button class="btn btn-secondary" style="width:auto; padding:0.35rem 0.75rem; font-size:11px;" onclick="markNotificationRead(${n.id}, event)">Mark Read</button>`;
 
-          container.innerHTML += `
+            const time =
+              new Date(n.createdAt).toLocaleDateString() +
+              ' ' +
+              new Date(n.createdAt).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              });
+
+            container.innerHTML += `
             <div class="${itemClass}" id="notif-${n.id}">
               <div class="notif-text">
                 <div class="notif-title">${n.title}</div>
@@ -1065,56 +1767,59 @@
               <div>${markBtn}</div>
             </div>
           `;
-        });
-
-      } catch (err) {
-        console.error('Failed to load notifications:', err);
-      }
-    }
-
-    async function loadUnreadCount() {
-      try {
-        const response = await fetch('/notifications/unread-count');
-        if (!response.ok) throw new Error();
-        const data = await response.json();
-
-        const badge = document.getElementById('unread-badge');
-        if (data.unread > 0) {
-          badge.textContent = data.unread;
-          badge.style.display = 'flex';
-        } else {
-          badge.style.display = 'none';
+          });
+        } catch (err) {
+          console.error('Failed to load notifications:', err);
         }
-      } catch (err) {
-        console.error('Failed to get unread count:', err);
       }
-    }
 
-    async function markNotificationRead(id, event) {
-      if (event) event.stopPropagation();
-      try {
-        const response = await fetch(`/notifications/${id}/read`, { method: 'PATCH' });
-        if (!response.ok) throw new Error();
+      async function loadUnreadCount() {
+        try {
+          const response = await fetch('/notifications/unread-count');
+          if (!response.ok) throw new Error();
+          const data = await response.json();
 
-        // Reload
-        loadNotifications();
-        loadUnreadCount();
-      } catch (err) {
-        console.error('Failed to mark read:', err);
+          const badge = document.getElementById('unread-badge');
+          if (data.unread > 0) {
+            badge.textContent = data.unread;
+            badge.style.display = 'flex';
+          } else {
+            badge.style.display = 'none';
+          }
+        } catch (err) {
+          console.error('Failed to get unread count:', err);
+        }
       }
-    }
 
-    async function markAllNotificationsRead() {
-      try {
-        const response = await fetch('/notifications/read-all', { method: 'PATCH' });
-        if (!response.ok) throw new Error();
+      async function markNotificationRead(id, event) {
+        if (event) event.stopPropagation();
+        try {
+          const response = await fetch(`/notifications/${id}/read`, {
+            method: 'PATCH',
+          });
+          if (!response.ok) throw new Error();
 
-        loadNotifications();
-        loadUnreadCount();
-      } catch (err) {
-        console.error('Failed to mark all read:', err);
+          // Reload
+          loadNotifications();
+          loadUnreadCount();
+        } catch (err) {
+          console.error('Failed to mark read:', err);
+        }
       }
-    }
-  </script>
-</body>
+
+      async function markAllNotificationsRead() {
+        try {
+          const response = await fetch('/notifications/read-all', {
+            method: 'PATCH',
+          });
+          if (!response.ok) throw new Error();
+
+          loadNotifications();
+          loadUnreadCount();
+        } catch (err) {
+          console.error('Failed to mark all read:', err);
+        }
+      }
+    </script>
+  </body>
 </html>
