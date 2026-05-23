@@ -21,7 +21,7 @@ module.exports = {
     await queryInterface.bulkInsert('users', [
       {
         id: 1,
-        email: 'admin@quizminia.com',
+        email: 'admin@examprap.click',
         password: hashPassword('Admin@12345'),
         status: true,
         roleId: 1,
@@ -35,7 +35,7 @@ module.exports = {
       },
       {
         id: 2,
-        email: 'teacher@quizminia.com',
+        email: 'teacher@examprap.click',
         password: hashPassword('Teacher@12345'),
         status: true,
         roleId: 2,
@@ -51,7 +51,7 @@ module.exports = {
       },
       {
         id: 3,
-        email: 'student@quizminia.com',
+        email: 'student@examprap.click',
         password: hashPassword('Student@12345'),
         status: true,
         roleId: 3,
@@ -70,7 +70,7 @@ module.exports = {
 
   async down(queryInterface) {
     await queryInterface.bulkDelete('users', {
-      email: ['admin@quizminia.com', 'teacher@quizminia.com', 'student@quizminia.com'],
+      email: ['admin@examprap.click', 'teacher@examprap.click', 'student@examprap.click'],
     }, {});
   },
 };
