@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Workspace | QuizMinia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --card-bg: rgba(22, 28, 45, 0.6);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --success: #10b981;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.1) 0px, transparent 50%);
+      min-height: 100vh;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.75rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 20px;
+      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+    }
+
+    .brand-name {
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(to right, #fff, #c7d2fe);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .user-profile-menu {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #10b981, #3b82f6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: white;
+      font-size: 14px;
+    }
+
+    .user-info {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .user-info {
+        display: flex;
+        flex-direction: column;
+      }
+      .user-name {
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .user-role {
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: var(--error);
+      color: #fff;
+    }
+
+    /* Layout */
+    .wrapper {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Tabs Navigation */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--card-border);
+      gap: 2rem;
+      margin-bottom: 2rem;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.75rem 0.5rem;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    /* Content Panels */
+    .panel {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-icon.blue { background: rgba(59, 130, 246, 0.1); color: #60a5fa; }
+    .stat-icon.green { background: rgba(16, 185, 129, 0.1); color: #34d399; }
+    .stat-icon.indigo { background: rgba(99, 102, 241, 0.1); color: #818cf8; }
+    .stat-icon.yellow { background: rgba(245, 158, 11, 0.1); color: #fbbf24; }
+
+    .stat-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Content Box */
+    .content-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .box-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Buttons */
+    .btn-action {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-action:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: #f87171;
+    }
+
+    .btn-danger:hover {
+      background: var(--error);
+      border-color: var(--error);
+      color: white;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      border: none;
+      color: #fff;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 18px rgba(99, 102, 241, 0.3);
+    }
+
+    /* Tables styling */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .custom-table th, .custom-table td {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .custom-table th {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    .custom-table td {
+      font-size: 15px;
+    }
+
+    .custom-table tr:hover td {
+      background: rgba(255,255,255,0.01);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .status-published { background: rgba(16, 185, 129, 0.1); color: #34d399; }
+    .status-draft { background: rgba(245, 158, 11, 0.1); color: #fbbf24; }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(11, 15, 25, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1100;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+    }
+
+    .modal-container {
+      background: #111827;
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      max-width: 550px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+      animation: zoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: #111827;
+      z-index: 10;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .btn-close-modal {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .btn-close-modal:hover {
+      color: #fff;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input, select, textarea {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .form-input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .flex-row {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .flex-row .form-group {
+      flex: 1;
+    }
+
+    /* Toggle switches */
+    .switch-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .switch-box {
+      width: 44px;
+      height: 24px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      position: relative;
+      transition: background 0.3s;
+    }
+
+    .switch-dot {
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.3s;
+    }
+
+    .switch-container.active .switch-box {
+      background: var(--accent);
+    }
+
+    .switch-container.active .switch-dot {
+      transform: translateX(20px);
+    }
+
+    /* Questions Panel Split Screen */
+    .questions-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    @media (min-width: 992px) {
+      .questions-workspace {
+        grid-template-columns: 1.2fr 1fr;
+      }
+    }
+
+    .question-list-item {
+      border: 1px solid var(--card-border);
+      background: rgba(15, 23, 42, 0.3);
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .q-item-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .q-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      text-transform: capitalize;
+    }
+
+    .q-text {
+      font-weight: 600;
+      font-size: 15px;
+      color: white;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .q-actions {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+      border-top: 1px solid var(--card-border);
+      padding-top: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .options-preview {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .opt-preview-item {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .opt-preview-item.correct {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    /* Reusable Loading Spinner styles */
+    .loader-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+      color: var(--text-muted);
+      gap: 1rem;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(99, 102, 241, 0.15);
+      border-radius: 50%;
+      border-top-color: var(--accent);
+      animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="#" class="brand">
+      <div class="brand-logo">Q</div>
+      <span class="brand-name">QuizMinia</span>
+    </a>
+
+    <div class="nav-user">
+      <div class="user-profile-menu">
+        <div class="user-avatar">
+          <%= user.firstName[0].toUpperCase() %><%= user.lastName[0].toUpperCase() %>
+        </div>
+        <div class="user-info">
+          <span class="user-name"><%= user.firstName %> <%= user.lastName %></span>
+          <span class="user-role"><%= user.subject || 'Instructor' %></span>
+        </div>
+      </div>
+
+      <button class="btn-logout" onclick="logout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- Content Wrapper -->
+  <div class="wrapper">
+    <!-- Tabs Navigation -->
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-dashboard" onclick="switchTab('dashboard')">
+        <i data-feather="grid" style="width: 18px; height: 18px;"></i> Dashboard
+      </button>
+      <button class="tab-btn" id="tab-quizzes" onclick="switchTab('quizzes')">
+        <i data-feather="book-open" style="width: 18px; height: 18px;"></i> Quizzes & Questions
+      </button>
+      <button class="tab-btn" id="tab-results" onclick="switchTab('results')">
+        <i data-feather="award" style="width: 18px; height: 18px;"></i> Student Results
+      </button>
+    </div>
+
+    <!-- ─── PANEL 1: DASHBOARD ─── -->
+    <div class="panel active" id="panel-dashboard">
+      <!-- Stats Cards -->
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <i data-feather="book"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="dash-quizzes">0</span>
+            <span class="stat-label">Total Quizzes</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <i data-feather="check-square"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="dash-published">0</span>
+            <span class="stat-label">Published Quizzes</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon indigo">
+            <i data-feather="users"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="dash-attempts">0</span>
+            <span class="stat-label">Student Attempts</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon yellow">
+            <i data-feather="pie-chart"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="dash-passrate">0%</span>
+            <span class="stat-label">Avg Pass Rate</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quizzes Analytics Table -->
+      <div class="content-box">
+        <div class="box-header">
+          <h2 class="box-title"><i data-feather="bar-chart-2"></i> Quiz Analytics Breakdown</h2>
+        </div>
+        <div class="table-container">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Quiz Title</th>
+                <th>Subject</th>
+                <th>Adaptive</th>
+                <th>Published</th>
+                <th>Attempts</th>
+                <th>Avg Score</th>
+                <th>Pass Rate</th>
+              </tr>
+            </thead>
+            <tbody id="analyticsTableBody">
+              <!-- JS rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PANEL 2: QUIZZES & QUESTIONS ─── -->
+    <div class="panel" id="panel-quizzes">
+      <div class="content-box">
+        <div class="box-header">
+          <h2 class="box-title"><i data-feather="list"></i> Managed Quizzes</h2>
+          <button class="btn-action btn-primary" onclick="openCreateQuizModal()">
+            <i data-feather="plus"></i> Create Quiz
+          </button>
+        </div>
+
+        <div class="table-container" id="quizzesTableContainer">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Subject</th>
+                <th>Difficulty</th>
+                <th>Adaptive</th>
+                <th>Limit</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="quizzesTableBody">
+              <!-- JS rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Secondary Panel: Manage Questions (Visible when a Quiz is clicked) -->
+      <div class="content-box" id="questionsWorkspaceBox" style="display: none;">
+        <div class="box-header">
+          <div>
+            <h2 class="box-title" id="workspaceQuizTitle">Manage Questions</h2>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 0.25rem;" id="workspaceQuizSub"></p>
+          </div>
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn-action" onclick="closeQuestionsWorkspace()"><i data-feather="arrow-left"></i> Back</button>
+            <button class="btn-action btn-primary" onclick="openAddQuestionModal()"><i data-feather="plus"></i> Add Question</button>
+          </div>
+        </div>
+
+        <div class="questions-workspace">
+          <!-- Left side: Questions List -->
+          <div>
+            <h3 style="font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 1rem;">EXISTING QUESTIONS</h3>
+            <div id="questionsContainer">
+              <!-- JS rendered -->
+            </div>
+          </div>
+
+          <!-- Right side: Quick Reference AI Adaptive Metrics -->
+          <div>
+            <div style="background: rgba(99,102,241,0.04); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 16px;">
+              <h3 style="font-size: 15px; font-weight: 700; color: #a5b4fc; margin-bottom: 0.75rem; display:flex; align-items:center; gap:0.4rem;">
+                <i data-feather="cpu" style="width:16px; height:16px;"></i> Adaptive Question Balancing
+              </h3>
+              <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">
+                Ensure your quiz has questions across a wide difficulty spectrum. The AI adaptive engine chooses the next question based on the student's current proficiency score (0.0 = Easy, 1.0 = Hard).
+              </p>
+              <div style="border-top:1px solid var(--card-border); padding-top:1rem; margin-top:1rem;">
+                <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:0.4rem;">
+                  <span>Easy Questions (0.0 - 0.35)</span>
+                  <b id="easyCount">0</b>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:0.4rem;">
+                  <span>Medium Questions (0.35 - 0.65)</span>
+                  <b id="mediumCount">0</b>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:0.4rem;">
+                  <span>Hard Questions (0.65 - 1.0)</span>
+                  <b id="hardCount">0</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PANEL 3: STUDENT RESULTS ─── -->
+    <div class="panel" id="panel-results">
+      <div class="content-box">
+        <h2 class="box-title"><i data-feather="users"></i> Student Attempts & Grades</h2>
+        <p style="font-size:14px; color:var(--text-muted); margin-bottom:1.5rem;">Review submissions and AI insights generated from student completions.</p>
+
+        <div class="table-container">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Quiz</th>
+                <th>Score</th>
+                <th>Status</th>
+                <th>Time Spent</th>
+                <th>Completed At</th>
+                <th>AI Insight</th>
+              </tr>
+            </thead>
+            <tbody id="resultsTableBody">
+              <!-- JS rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CREATE/EDIT QUIZ MODAL ─── -->
+  <div class="modal-overlay" id="quizModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 class="modal-title" id="quizModalTitle">Create Quiz</h2>
+        <button class="btn-close-modal" onclick="closeQuizModal()"><i data-feather="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="quizForm">
+          <input type="hidden" id="quizFormId">
+          <div class="form-group">
+            <label class="form-label" for="qTitle">Quiz Title</label>
+            <input type="text" id="qTitle" class="form-input" placeholder="e.g. Calculus Introduction" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="qDesc">Description</label>
+            <textarea id="qDesc" placeholder="Describe the topic coverage..."></textarea>
+          </div>
+          <div class="flex-row">
+            <div class="form-group">
+              <label class="form-label" for="qSubject">Subject</label>
+              <input type="text" id="qSubject" class="form-input" placeholder="e.g. Mathematics" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="qDiff">Base Difficulty</label>
+              <select id="qDiff">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex-row">
+            <div class="form-group">
+              <label class="form-label" for="qTime">Time Limit (mins)</label>
+              <input type="number" id="qTime" class="form-input" placeholder="e.g. 30" min="1">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="qPassing">Passing Score (%)</label>
+              <input type="number" id="qPassing" class="form-input" placeholder="e.g. 60" value="60" min="1" max="100" required>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:1rem; margin-top:1.5rem; border-top:1px solid var(--card-border); padding-top:1.5rem;">
+            <div class="switch-container active" id="qAdaptiveToggle" onclick="toggleSwitch('qAdaptiveToggle')">
+              <div class="switch-box">
+                <div class="switch-dot"></div>
+              </div>
+              <span class="form-label" style="margin-bottom:0;">AI Adaptive Difficulty</span>
+            </div>
+
+            <div class="switch-container active" id="qGenerateAiToggle" onclick="toggleSwitch('qGenerateAiToggle')">
+              <div class="switch-box">
+                <div class="switch-dot"></div>
+              </div>
+              <span class="form-label" style="margin-bottom:0;">Generate AI Questions</span>
+            </div>
+
+            <div class="switch-container" id="qPublishedToggle" onclick="toggleSwitch('qPublishedToggle')">
+              <div class="switch-box">
+                <div class="switch-dot"></div>
+              </div>
+              <span class="form-label" style="margin-bottom:0;">Publish Immediately</span>
+            </div>
+          </div>
+
+          <div class="form-group" id="aiQuestionTypeGroup" style="margin-top: 1.5rem; display: none;">
+            <label class="form-label" for="qAiType">AI Question Type</label>
+            <select id="qAiType" class="form-input" style="width:100%; border: 1px solid var(--card-border); background: var(--bg-card); color: var(--text-main); padding: 0.6rem; border-radius: 8px;">
+              <option value="mixed" selected>Mixed (MCQ, True/False, Short Answer)</option>
+              <option value="multiple_choice">Multiple Choice Only</option>
+              <option value="true_false">True / False Only</option>
+              <option value="short_answer">Short Answer Only</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn-submit btn-primary" style="margin-top:2rem; width:100%; border-radius:12px; padding:0.8rem;" id="quizSaveBtn">Save Quiz</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CREATE/EDIT QUESTION MODAL ─── -->
+  <div class="modal-overlay" id="questionModal">
+    <div class="modal-container" style="max-width:600px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="questionModalTitle">Add Question</h2>
+        <button class="btn-close-modal" onclick="closeQuestionModal()"><i data-feather="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="questionForm">
+          <input type="hidden" id="questionFormId">
+          
+          <div class="form-group">
+            <label class="form-label" for="questText">Question Text</label>
+            <textarea id="questText" placeholder="Type the question content here..." required></textarea>
+          </div>
+
+          <div class="flex-row">
+            <div class="form-group">
+              <label class="form-label" for="questType">Question Type</label>
+              <select id="questType" onchange="adjustQuestionTypeUI()">
+                <option value="multiple_choice">Multiple Choice</option>
+                <option value="true_false">True / False</option>
+                <option value="short_answer">Short Answer</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="questDiffScore">AI Difficulty Weight (0.0 - 1.0)</label>
+              <input type="number" id="questDiffScore" class="form-input" step="0.05" min="0" max="1" value="0.5" required>
+            </div>
+          </div>
+
+          <div class="flex-row">
+            <div class="form-group">
+              <label class="form-label" for="questPoints">Points</label>
+              <input type="number" id="questPoints" class="form-input" min="1" value="1" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="questTags">Tags (Comma-separated)</label>
+              <input type="text" id="questTags" class="form-input" placeholder="e.g. algebra, geometry">
+            </div>
+          </div>
+
+          <!-- Multiple Choice options -->
+          <div id="mcOptionsGroup">
+            <label class="form-label">Multiple Choice Options</label>
+            <div class="flex-row" style="margin-bottom:0.75rem;">
+              <input type="text" id="optA" class="form-input" placeholder="Option A text" style="flex:1;">
+              <input type="text" id="optB" class="form-input" placeholder="Option B text" style="flex:1;">
+            </div>
+            <div class="flex-row" style="margin-bottom:0.75rem;">
+              <input type="text" id="optC" class="form-input" placeholder="Option C text" style="flex:1;">
+              <input type="text" id="optD" class="form-input" placeholder="Option D text" style="flex:1;">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="questCorrect">Correct Answer</label>
+            <!-- Dynamically swaps based on type -->
+            <div id="correctAnswerInputContainer">
+              <select id="questCorrect">
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="questExpl">Explanation / AI Feedback Context</label>
+            <textarea id="questExpl" placeholder="Help students understand why this is correct..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit btn-primary" style="margin-top:2rem; width:100%; border-radius:12px; padding:0.8rem;">Save Question</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── AI INSIGHTS OVERVIEW MODAL ─── -->
+  <div class="modal-overlay" id="insightModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 class="modal-title">AI Performance Insight</h2>
+        <button class="btn-close-modal" onclick="closeInsightModal()"><i data-feather="x"></i></button>
+      </div>
+      <div class="modal-body" style="line-height:1.6;">
+        <div style="background: rgba(99,102,241,0.06); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 16px; margin-bottom: 1.5rem;">
+          <h4 style="font-size:14px; font-weight:700; color:#a5b4fc; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.4rem;">
+            <i data-feather="cpu" style="width:16px; height:16px;"></i> 🤖 AI Assessment Summary
+          </h4>
+          <p id="insightSummaryText" style="font-size:14px; color:var(--text-main);"></p>
+        </div>
+
+        <h4 style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:0.5rem;">STRENGTHS IDENTIFIED</h4>
+        <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1.5rem;" id="insightStrengths"></div>
+
+        <h4 style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:0.5rem;">AREAS TO IMPROVE</h4>
+        <div style="display:flex; flex-wrap:wrap; gap:0.5rem;" id="insightWeaknesses"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let activeTab = 'dashboard';
+    let currentQuizId = null;
+    let questionsList = [];
+
+    // Helper Spinner Render
+    function renderSpinner(containerId, text = 'Loading...') {
+      const el = document.getElementById(containerId);
+      if (el) {
+        el.innerHTML = `
+          <div class="loader-container">
+            <div class="spinner"></div>
+            <div style="font-size: 13px; color: var(--text-muted);">${text}</div>
+          </div>
+        `;
+      }
+    }
+
+    function renderTableSpinner(tbodyId, cols, text = 'Loading data...') {
+      const el = document.getElementById(tbodyId);
+      if (el) {
+        el.innerHTML = `
+          <tr>
+            <td colspan="${cols}" style="text-align: center; padding: 2rem;">
+              <div class="loader-container" style="padding: 1rem 0;">
+                <div class="spinner" style="width: 32px; height: 32px;"></div>
+                <div style="font-size: 13px; color: var(--text-muted);">${text}</div>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      feather.replace();
+      loadDashboardData();
+    });
+
+    function logout() {
+      fetch('/auth/logout', { method: 'POST' }).then(() => window.location.href = '/login');
+    }
+
+    function switchTab(tabName) {
+      activeTab = tabName;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
+
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      document.getElementById(`panel-${tabName}`).classList.add('active');
+
+      if (tabName === 'dashboard') {
+        loadDashboardData();
+      } else if (tabName === 'quizzes') {
+        loadQuizzes();
+        closeQuestionsWorkspace(); // Reset view
+      } else if (tabName === 'results') {
+        loadStudentResults();
+      }
+    }
+
+    function toggleSwitch(id) {
+      const el = document.getElementById(id);
+      el.classList.toggle('active');
+      if (id === 'qGenerateAiToggle') {
+        const typeGroup = document.getElementById('aiQuestionTypeGroup');
+        if (typeGroup) {
+          typeGroup.style.display = el.classList.contains('active') ? 'block' : 'none';
+        }
+      }
+    }
+
+    // ─── DASHBOARD WORKSPACE LOGIC ───
+    async function loadDashboardData() {
+      renderTableSpinner('analyticsTableBody', 7, 'Fetching quiz analytics...');
+      try {
+        const response = await fetch('/dashboard/teacher');
+        if (!response.ok) throw new Error();
+        const data = await response.json();
+
+        // Stats
+        document.getElementById('dash-quizzes').textContent = data.summary.totalQuizzes;
+        document.getElementById('dash-published').textContent = data.summary.publishedQuizzes;
+        document.getElementById('dash-attempts').textContent = data.summary.totalAttempts;
+        document.getElementById('dash-passrate').textContent = `${data.summary.avgPassRate}%`;
+
+        // Analytics Table
+        const tbody = document.getElementById('analyticsTableBody');
+        tbody.innerHTML = '';
+        if (data.quizzes.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:2rem;">No quizzes created yet.</td></tr>';
+          return;
+        }
+
+        data.quizzes.forEach(q => {
+          tbody.innerHTML += `
+            <tr>
+              <td style="font-weight:600; color:white;">${q.title}</td>
+              <td>${q.subject || 'General'}</td>
+              <td><span class="status-badge ${q.isAdaptive ? 'status-published' : 'status-draft'}">${q.isAdaptive ? 'AI Adaptive' : 'Static'}</span></td>
+              <td><span class="status-badge ${q.isPublished ? 'status-published' : 'status-draft'}">${q.isPublished ? 'Published' : 'Draft'}</span></td>
+              <td style="font-weight:600;">${q.totalAttempts}</td>
+              <td style="font-weight:600; color:white;">${q.avgScore}%</td>
+              <td style="font-weight:600; color:white;">${q.passRate}%</td>
+            </tr>
+          `;
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // ─── QUIZZES WORKSPACE LOGIC ───
+    async function loadQuizzes() {
+      renderTableSpinner('quizzesTableBody', 7, 'Fetching quizzes list...');
+      try {
+        const response = await fetch('/quizzes');
+        if (!response.ok) throw new Error();
+        const quizzes = await response.json();
+
+        const tbody = document.getElementById('quizzesTableBody');
+        tbody.innerHTML = '';
+
+        if (quizzes.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:3rem;">No quizzes created yet.</td></tr>';
+          return;
+        }
+
+        quizzes.forEach(q => {
+          tbody.innerHTML += `
+            <tr id="quiz-row-${q.id}">
+              <td style="font-weight:600; color:white;">${q.title}</td>
+              <td>${q.subject || 'General'}</td>
+              <td style="text-transform:capitalize;">${q.difficulty}</td>
+              <td><span class="status-badge ${q.isAdaptive ? 'status-published' : 'status-draft'}">${q.isAdaptive ? 'Yes' : 'No'}</span></td>
+              <td>${q.timeLimit ? `${q.timeLimit} mins` : 'No limit'}</td>
+              <td><span class="status-badge ${q.isPublished ? 'status-published' : 'status-draft'}">${q.isPublished ? 'Published' : 'Draft'}</span></td>
+              <td>
+                <div style="display:flex; gap:0.4rem;">
+                  <button class="btn-action" style="background:rgba(99,102,241,0.1); color:#818cf8; border-color:rgba(99,102,241,0.2);" onclick="enterQuestionsWorkspace(${q.id}, '${escapeHtml(q.title)}', '${escapeHtml(q.subject)}')">Questions</button>
+                  <button class="btn-action" onclick="openEditQuizModal(${q.id}, '${escapeHtml(q.title)}', '${escapeHtml(q.description || '')}', '${escapeHtml(q.subject || '')}', '${q.difficulty}', ${q.timeLimit || 'null'}, ${q.passingScore}, ${q.isAdaptive}, ${q.isPublished})">Settings</button>
+                  <button class="btn-action btn-danger" onclick="deleteQuiz(${q.id})"><i data-feather="trash-2" style="width:14px; height:14px;"></i></button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+        feather.replace();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function deleteQuiz(id) {
+      if (confirm('Are you sure you want to delete this quiz? All questions and student attempts will be deleted.')) {
+        try {
+          await fetch(`/quizzes/${id}`, { method: 'DELETE' });
+          loadQuizzes();
+        } catch {}
+      }
+    }
+
+    // Quiz Modals Actions
+    function openCreateQuizModal() {
+      document.getElementById('quizModalTitle').textContent = 'Create Quiz';
+      document.getElementById('quizFormId').value = '';
+      document.getElementById('qTitle').value = '';
+      document.getElementById('qDesc').value = '';
+      document.getElementById('qSubject').value = '';
+      document.getElementById('qDiff').value = 'medium';
+      document.getElementById('qTime').value = '';
+      document.getElementById('qPassing').value = 60;
+      document.getElementById('qAdaptiveToggle').classList.add('active');
+      document.getElementById('qPublishedToggle').classList.remove('active');
+      
+      // AI Question generation option visible and active on create
+      document.getElementById('qGenerateAiToggle').style.display = 'flex';
+      document.getElementById('qGenerateAiToggle').classList.add('active');
+      document.getElementById('aiQuestionTypeGroup').style.display = 'block';
+      document.getElementById('qAiType').value = 'mixed';
+
+      document.getElementById('quizModal').style.display = 'flex';
+    }
+
+    function openEditQuizModal(id, title, desc, subject, diff, timeLimit, passing, isAdaptive, isPublished) {
+      document.getElementById('quizModalTitle').textContent = 'Edit Quiz Settings';
+      document.getElementById('quizFormId').value = id;
+      document.getElementById('qTitle').value = title;
+      document.getElementById('qDesc').value = desc;
+      document.getElementById('qSubject').value = subject;
+      document.getElementById('qDiff').value = diff;
+      document.getElementById('qTime').value = timeLimit === null ? '' : timeLimit;
+      document.getElementById('qPassing').value = passing;
+
+      if (isAdaptive) document.getElementById('qAdaptiveToggle').classList.add('active');
+      else document.getElementById('qAdaptiveToggle').classList.remove('active');
+
+      if (isPublished) document.getElementById('qPublishedToggle').classList.add('active');
+      else document.getElementById('qPublishedToggle').classList.remove('active');
+
+      // AI Question generation option hidden on edit
+      document.getElementById('qGenerateAiToggle').style.display = 'none';
+      document.getElementById('aiQuestionTypeGroup').style.display = 'none';
+
+      document.getElementById('quizModal').style.display = 'flex';
+    }
+
+    function closeQuizModal() {
+      document.getElementById('quizModal').style.display = 'none';
+    }
+
+    document.getElementById('quizForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const id = document.getElementById('quizFormId').value;
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalBtnHtml = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span style="display:inline-flex; align-items:center; gap:0.5rem; justify-content:center; width:100%;"><div class="spinner" style="width:16px; height:16px; border-width:2px; border-top-color:#fff; animation:spin 1s linear infinite; margin:0;"></div> ${id ? 'Saving Quiz...' : 'Creating Quiz (AI Generating Questions)...'}</span>`;
+      const title = document.getElementById('qTitle').value;
+      const description = document.getElementById('qDesc').value;
+      const subject = document.getElementById('qSubject').value;
+      const difficulty = document.getElementById('qDiff').value;
+      const timeLimitVal = document.getElementById('qTime').value;
+      const passingScore = parseInt(document.getElementById('qPassing').value);
+      const isAdaptive = document.getElementById('qAdaptiveToggle').classList.contains('active');
+      const isPublished = document.getElementById('qPublishedToggle').classList.contains('active');
+
+      const payload = {
+        title,
+        description,
+        subject,
+        difficulty,
+        timeLimit: timeLimitVal ? parseInt(timeLimitVal) : null,
+        passingScore,
+        isAdaptive,
+        isPublished
+      };
+
+      if (!id) {
+        payload.generateAiQuestions = document.getElementById('qGenerateAiToggle').classList.contains('active');
+        if (payload.generateAiQuestions) {
+          payload.aiQuestionType = document.getElementById('qAiType').value;
+        }
+      }
+
+      try {
+        const method = id ? 'PATCH' : 'POST';
+        const url = id ? `/quizzes/${id}` : '/quizzes';
+
+        const response = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error('Failed to save quiz');
+
+        closeQuizModal();
+        loadQuizzes();
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnHtml;
+      }
+    });
+
+
+    // ─── QUESTIONS WORKSPACE SPLIT-SCREEN LOGIC ───
+    async function enterQuestionsWorkspace(quizId, quizTitle, quizSubject) {
+      currentQuizId = quizId;
+      document.getElementById('workspaceQuizTitle').textContent = quizTitle;
+      document.getElementById('workspaceQuizSub').textContent = `Subject: ${quizSubject} | Quiz ID: ${quizId}`;
+      
+      // Hide Quizzes Table, show Workspace box
+      document.getElementById('quizzesTableContainer').style.display = 'none';
+      document.getElementById('questionsWorkspaceBox').style.display = 'block';
+
+      loadWorkspaceQuestions();
+    }
+
+    function closeQuestionsWorkspace() {
+      document.getElementById('quizzesTableContainer').style.display = 'block';
+      document.getElementById('questionsWorkspaceBox').style.display = 'none';
+      currentQuizId = null;
+    }
+
+    async function loadWorkspaceQuestions() {
+      renderSpinner('questionsContainer', 'Loading workspace questions...');
+      try {
+        // Fetch full quiz which includes questions
+        const response = await fetch(`/quizzes/${currentQuizId}`);
+        if (!response.ok) throw new Error();
+        const quiz = await response.json();
+
+        questionsList = quiz.questions || [];
+        const container = document.getElementById('questionsContainer');
+        container.innerHTML = '';
+
+        let easy = 0, medium = 0, hard = 0;
+
+        if (questionsList.length === 0) {
+          container.innerHTML = '<p style="text-align:center; padding: 2rem; color: var(--text-muted);">No questions added to this quiz yet.</p>';
+        } else {
+          questionsList.forEach((q, idx) => {
+            const score = q.difficultyScore ?? 0.5;
+            let typeLabel = 'Multiple Choice';
+            if (q.type === 'true_false') typeLabel = 'True / False';
+            else if (q.type === 'short_answer') typeLabel = 'Short Answer';
+
+            if (score <= 0.35) { easy++; }
+            else if (score <= 0.65) { medium++; }
+            else { hard++; }
+
+            const diffClass = score <= 0.35 ? 'difficulty-easy' : score <= 0.65 ? 'difficulty-medium' : 'difficulty-hard';
+            const diffLabel = score <= 0.35 ? 'easy' : score <= 0.65 ? 'medium' : 'hard';
+
+            let optionsHtml = '';
+            if (q.options && q.options.length > 0) {
+              optionsHtml = '<div class="options-preview">';
+              q.options.forEach(opt => {
+                const isCorrect = opt.label === q.correctAnswer;
+                optionsHtml += `<div class="opt-preview-item ${isCorrect ? 'correct' : ''}"><b>${opt.label}:</b> ${opt.text}</div>`;
+              });
+              optionsHtml += '</div>';
+            } else {
+              optionsHtml = `<div style="font-size:13px; color:var(--text-muted); margin-bottom: 0.5rem;">Correct Answer: <b style="color:var(--success);">${q.correctAnswer}</b></div>`;
+            }
+
+            container.innerHTML += `
+              <div class="question-list-item">
+                <div class="q-item-header">
+                  <span style="font-weight:700; font-size:13px; color:var(--text-muted);">QUESTION ${idx+1} — ${typeLabel}</span>
+                  <span class="q-badge ${diffClass}">Weight: ${score.toFixed(2)} (${diffLabel})</span>
+                </div>
+                <div class="q-text">${escapeHtml(q.text)}</div>
+                
+                ${optionsHtml}
+
+                <div class="q-actions">
+                  <button class="btn-action" style="padding:0.3rem 0.6rem; font-size:12px;" onclick="openEditQuestionModal(${q.id})">Edit</button>
+                  <button class="btn-action btn-danger" style="padding:0.3rem 0.6rem; font-size:12px;" onclick="deleteQuestion(${q.id})">Delete</button>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        // Update indicators
+        document.getElementById('easyCount').textContent = easy;
+        document.getElementById('mediumCount').textContent = medium;
+        document.getElementById('hardCount').textContent = hard;
+
+        feather.replace();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function deleteQuestion(id) {
+      if (confirm('Delete this question?')) {
+        try {
+          await fetch(`/quizzes/questions/${id}`, { method: 'DELETE' });
+          loadWorkspaceQuestions();
+        } catch {}
+      }
+    }
+
+    // Question modals actions
+    function openAddQuestionModal() {
+      document.getElementById('questionModalTitle').textContent = 'Add Question';
+      document.getElementById('questionFormId').value = '';
+      document.getElementById('questText').value = '';
+      document.getElementById('questType').value = 'multiple_choice';
+      document.getElementById('questDiffScore').value = 0.5;
+      document.getElementById('questPoints').value = 1;
+      document.getElementById('questTags').value = '';
+      document.getElementById('questExpl').value = '';
+
+      document.getElementById('optA').value = '';
+      document.getElementById('optB').value = '';
+      document.getElementById('optC').value = '';
+      document.getElementById('optD').value = '';
+
+      adjustQuestionTypeUI();
+      document.getElementById('questionModal').style.display = 'flex';
+    }
+
+    function openEditQuestionModal(id) {
+      const q = questionsList.find(item => item.id === id);
+      if (!q) return;
+
+      document.getElementById('questionModalTitle').textContent = 'Edit Question';
+      document.getElementById('questionFormId').value = q.id;
+      document.getElementById('questText').value = q.text;
+      document.getElementById('questType').value = q.type;
+      document.getElementById('questDiffScore').value = q.difficultyScore;
+      document.getElementById('questPoints').value = q.points;
+      document.getElementById('questTags').value = (q.tags || []).join(', ');
+      document.getElementById('questExpl').value = q.explanation || '';
+
+      if (q.type === 'multiple_choice') {
+        const oA = q.options.find(o => o.label === 'A');
+        const oB = q.options.find(o => o.label === 'B');
+        const oC = q.options.find(o => o.label === 'C');
+        const oD = q.options.find(o => o.label === 'D');
+
+        document.getElementById('optA').value = oA ? oA.text : '';
+        document.getElementById('optB').value = oB ? oB.text : '';
+        document.getElementById('optC').value = oC ? oC.text : '';
+        document.getElementById('optD').value = oD ? oD.text : '';
+      }
+
+      adjustQuestionTypeUI();
+      document.getElementById('questCorrect').value = q.correctAnswer;
+      document.getElementById('questionModal').style.display = 'flex';
+    }
+
+    function closeQuestionModal() {
+      document.getElementById('questionModal').style.display = 'none';
+    }
+
+    function adjustQuestionTypeUI() {
+      const type = document.getElementById('questType').value;
+      const mcGroup = document.getElementById('mcOptionsGroup');
+      const correctContainer = document.getElementById('correctAnswerInputContainer');
+
+      if (type === 'multiple_choice') {
+        mcGroup.style.display = 'block';
+        correctContainer.innerHTML = `
+          <select id="questCorrect">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+          </select>
+        `;
+      } else if (type === 'true_false') {
+        mcGroup.style.display = 'none';
+        correctContainer.innerHTML = `
+          <select id="questCorrect">
+            <option value="true">True</option>
+            <option value="false">False</option>
+          </select>
+        `;
+      } else {
+        // Short Answer
+        mcGroup.style.display = 'none';
+        correctContainer.innerHTML = `
+          <input type="text" id="questCorrect" class="form-input" placeholder="Type correct answer string (case-insensitive)" required>
+        `;
+      }
+    }
+
+    document.getElementById('questionForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const id = document.getElementById('questionFormId').value;
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalBtnHtml = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span style="display:inline-flex; align-items:center; gap:0.5rem; justify-content:center; width:100%;"><div class="spinner" style="width:16px; height:16px; border-width:2px; border-top-color:#fff; animation:spin 1s linear infinite; margin:0;"></div> Saving Question...</span>`;
+      const text = document.getElementById('questText').value;
+      const type = document.getElementById('questType').value;
+      const difficultyScore = parseFloat(document.getElementById('questDiffScore').value);
+      const points = parseInt(document.getElementById('questPoints').value);
+      const tagsStr = document.getElementById('questTags').value;
+      const explanation = document.getElementById('questExpl').value;
+      const correctAnswer = document.getElementById('questCorrect').value.trim();
+
+      const tags = tagsStr.split(',').map(t => t.trim()).filter(t => t.length > 0);
+
+      // Infers label difficulty
+      const difficulty = difficultyScore <= 0.35 ? 'easy' : difficultyScore <= 0.65 ? 'medium' : 'hard';
+
+      const payload = {
+        text,
+        type,
+        difficulty,
+        difficultyScore,
+        points,
+        tags,
+        correctAnswer,
+        explanation
+      };
+
+      if (type === 'multiple_choice') {
+        const optA = document.getElementById('optA').value.trim();
+        const optB = document.getElementById('optB').value.trim();
+        const optC = document.getElementById('optC').value.trim();
+        const optD = document.getElementById('optD').value.trim();
+
+        if (!optA || !optB || !optC || !optD) {
+          alert('All 4 multiple choice options are required.');
+          return;
+        }
+
+        payload.options = [
+          { label: 'A', text: optA },
+          { label: 'B', text: optB },
+          { label: 'C', text: optC },
+          { label: 'D', text: optD }
+        ];
+      }
+
+      try {
+        const method = id ? 'PATCH' : 'POST';
+        const url = id ? `/quizzes/questions/${id}` : `/quizzes/${currentQuizId}/questions`;
+
+        const response = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error('Could not save question');
+
+        closeQuestionModal();
+        loadWorkspaceQuestions();
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnHtml;
+      }
+    });
+
+
+    // ─── STUDENT RESULTS TAB LOGIC ───
+    async function loadStudentResults() {
+      renderTableSpinner('resultsTableBody', 7, 'Fetching student submissions...');
+      try {
+        const response = await fetch('/dashboard/teacher');
+        if (!response.ok) throw new Error();
+        const tdata = await response.json();
+
+        // In a real app we'd fetch directly from /quiz-attempts. 
+        // Let's call a specific custom mock or queries to fetch all student attempts.
+        // Actually, we can fetch all completed attempts or fetch from a helper in dashboard.
+        // Let's create an endpoint GET /quiz-attempts/all-teacher if needed, or query them.
+        // Wait! Let's check what attempts endpoints we have:
+        // We have GET /quiz-attempts/history (student only).
+        // Let's make sure we can load the student results in teacher dashboard.
+        // Wait, how does our teacher dashboard load results?
+        // Let's check `DashboardService.teacherDashboard`. It returns individual quiz aggregates but not the full attempts list!
+        // Ah! Let's add a quick REST endpoint in `QuizAttemptsController` or `DashboardController` to get all attempts for teacher's quizzes, so they show up here!
+        // That is extremely useful and complete. Let's do that.
+        // Let's fetch GET /dashboard/teacher-attempts to return student attempts list!
+        // Yes, let's write that endpoint. First, let's look at what we've written so far.
+        // Let's fetch `/dashboard/teacher-attempts`. Since it's not defined, let's add it to `DashboardController` and `DashboardService`.
+        const res = await fetch('/dashboard/teacher-attempts');
+        if (!res.ok) {
+          // fallback if not implemented yet, we will implement it next
+          throw new Error('Not implemented');
+        }
+        const data = await res.json();
+        renderResultsTable(data);
+      } catch (err) {
+        // Render empty or retry
+        document.getElementById('resultsTableBody').innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:3rem;">No submissions yet.</td></tr>';
+      }
+    }
+
+    function renderResultsTable(attempts) {
+      const tbody = document.getElementById('resultsTableBody');
+      tbody.innerHTML = '';
+
+      if (!attempts || attempts.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:3rem;">No submissions yet.</td></tr>';
+        return;
+      }
+
+      attempts.forEach(a => {
+        const studentName = a.user ? `${a.user.firstName} ${a.user.lastName}` : 'Student';
+        const quizTitle = a.quiz ? a.quiz.title : 'Quiz';
+        const score = `${a.percentage}%`;
+        const status = a.passed ? '<span class="status-badge status-published">PASSED</span>' : '<span class="status-badge status-draft">FAILED</span>';
+        const time = a.timeTaken ? `${Math.floor(a.timeTaken / 60)}m ${a.timeTaken % 60}s` : 'N/A';
+        
+        const date = new Date(a.completedAt).toLocaleDateString(undefined, {
+          month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        tbody.innerHTML += `
+          <tr>
+            <td style="font-weight:600; color:white;">${studentName}</td>
+            <td>${quizTitle}</td>
+            <td style="font-weight:700; color:white;">${score}</td>
+            <td>${status}</td>
+            <td>${time}</td>
+            <td>${date}</td>
+            <td>
+              ${a.aiInsights && a.aiInsights.performanceSummary 
+                ? `<button class="btn-action" onclick="showAiInsightModal('${escapeHtml(a.aiInsights.performanceSummary)}', '${escapeHtml((a.aiInsights.strengths || []).join(','))}', '${escapeHtml((a.aiInsights.weaknesses || []).join(','))}')">View AI Insight</button>`
+                : '<span style="color:var(--text-muted); font-size:13px;">No insight</span>'
+              }
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function showAiInsightModal(summary, strengths, weaknesses) {
+      document.getElementById('insightSummaryText').textContent = summary || 'No summary available.';
+      
+      const sContainer = document.getElementById('insightStrengths');
+      const wContainer = document.getElementById('insightWeaknesses');
+
+      sContainer.innerHTML = '';
+      wContainer.innerHTML = '';
+
+      const sArr = strengths ? strengths.split(',') : [];
+      const wArr = weaknesses ? weaknesses.split(',') : [];
+
+      if (sArr.length > 0 && sArr[0] !== '') {
+        sArr.forEach(s => sContainer.innerHTML += `<span class="tag strength">${s}</span>`);
+      } else {
+        sContainer.innerHTML = '<span class="tag neutral">None identified yet</span>';
+      }
+
+      if (wArr.length > 0 && wArr[0] !== '') {
+        wArr.forEach(w => wContainer.innerHTML += `<span class="tag weakness">${w}</span>`);
+      } else {
+        wContainer.innerHTML = '<span class="tag neutral">No focus areas identified</span>';
+      }
+
+      document.getElementById('insightModal').style.display = 'flex';
+      feather.replace();
+    }
+
+    function closeInsightModal() {
+      document.getElementById('insightModal').style.display = 'none';
+    }
+
+    // Utils
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>

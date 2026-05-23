@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register | QuizMinia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --card-bg: rgba(22, 28, 45, 0.6);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.3);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --error-bg: rgba(239, 68, 68, 0.15);
+      --error-border: rgba(239, 68, 68, 0.3);
+      --error-text: #f87171;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-main);
+      padding: 1.5rem;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      position: relative;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      background: var(--accent);
+      filter: blur(100px);
+      top: -40px;
+      left: -40px;
+      z-index: -1;
+      opacity: 0.5;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(to right, #fff, #c7d2fe);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .row {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .row .form-group {
+      flex: 1;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input, select {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.8rem 1rem;
+      color: #fff;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .form-input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-glow);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    select option {
+      background-color: var(--bg-dark);
+      color: #fff;
+    }
+
+    .role-toggle {
+      display: flex;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .role-option {
+      flex: 1;
+      text-align: center;
+      padding: 0.7rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .role-option.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 10px var(--accent-glow);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      border: none;
+      border-radius: 12px;
+      padding: 0.9rem;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 12px var(--accent-glow);
+      margin-top: 1rem;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .footer-text {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .footer-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .footer-link:hover {
+      color: #8b5cf6;
+      text-decoration: underline;
+    }
+
+    .alert-error {
+      background: var(--error-bg);
+      border: 1px solid var(--error-border);
+      color: var(--error-text);
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      font-size: 14px;
+      margin-bottom: 1.5rem;
+      display: none;
+      animation: shake 0.4s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <h1 class="title">Create Account</h1>
+        <p class="subtitle">Join QuizMinia adaptive learning system</p>
+      </div>
+
+      <div class="alert-error" id="errorAlert"></div>
+
+      <div class="role-toggle">
+        <div class="role-option active" id="roleStudent" onclick="setRole('student')">Student</div>
+        <div class="role-option" id="roleTeacher" onclick="setRole('teacher')">Teacher</div>
+      </div>
+
+      <form id="registerForm">
+        <div class="row">
+          <div class="form-group">
+            <label class="form-label" for="firstName">First Name</label>
+            <input type="text" id="firstName" class="form-input" placeholder="John" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="lastName">Last Name</label>
+            <input type="text" id="lastName" class="form-input" placeholder="Smith" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <input type="email" id="email" class="form-input" placeholder="john@example.com" required>
+        </div>
+
+        <!-- Role-Specific Input Fields -->
+        <div class="form-group" id="gradeGroup">
+          <label class="form-label" for="grade">Grade / Class</label>
+          <input type="text" id="grade" class="form-input" placeholder="Grade 10" required>
+        </div>
+
+        <div class="form-group" id="subjectGroup" style="display: none;">
+          <label class="form-label" for="subject">Teaching Subject</label>
+          <input type="text" id="subject" class="form-input" placeholder="Mathematics">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input type="password" id="password" class="form-input" placeholder="At least 8 characters" minlength="8" required>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span class="spinner" id="btnSpinner"></span>
+          <span id="btnText">Sign Up</span>
+        </button>
+      </form>
+
+      <p class="footer-text">
+        Already have an account? 
+        <a href="/login" class="footer-link">Sign in</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    let selectedRole = 'student';
+
+    function setRole(role) {
+      selectedRole = role;
+      
+      const roleStudent = document.getElementById('roleStudent');
+      const roleTeacher = document.getElementById('roleTeacher');
+      const gradeGroup = document.getElementById('gradeGroup');
+      const subjectGroup = document.getElementById('subjectGroup');
+      const gradeInput = document.getElementById('grade');
+      const subjectInput = document.getElementById('subject');
+
+      if (role === 'student') {
+        roleStudent.classList.add('active');
+        roleTeacher.classList.remove('active');
+        gradeGroup.style.display = 'block';
+        subjectGroup.style.display = 'none';
+        gradeInput.required = true;
+        subjectInput.required = false;
+      } else {
+        roleStudent.classList.remove('active');
+        roleTeacher.classList.add('active');
+        gradeGroup.style.display = 'none';
+        subjectGroup.style.display = 'block';
+        gradeInput.required = false;
+        subjectInput.required = true;
+      }
+    }
+
+    const form = document.getElementById('registerForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const btnText = document.getElementById('btnText');
+    const errorAlert = document.getElementById('errorAlert');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      errorAlert.style.display = 'none';
+      submitBtn.disabled = true;
+      btnSpinner.style.display = 'block';
+      btnText.textContent = 'Creating account...';
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const firstName = document.getElementById('firstName').value;
+      const lastName = document.getElementById('lastName').value;
+      const grade = document.getElementById('grade').value;
+      const subject = document.getElementById('subject').value;
+
+      const payload = {
+        email,
+        password,
+        firstName,
+        lastName,
+        role: selectedRole
+      };
+
+      if (selectedRole === 'student') {
+        payload.grade = grade;
+      } else {
+        payload.subject = subject;
+      }
+
+      try {
+        const response = await fetch('/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Registration failed. Please try again.');
+        }
+
+        // Successfully registered and auto-logged in, redirect to dashboard
+        window.location.href = '/dashboard';
+      } catch (err) {
+        errorAlert.textContent = err.message;
+        errorAlert.style.display = 'block';
+        submitBtn.disabled = false;
+        btnSpinner.style.display = 'none';
+        btnText.textContent = 'Sign Up';
+      }
+    });
+  </script>
+</body>
+</html>
