@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quizminia Project Presentation</title>
+  <style>
+    @page {
+      margin: 0;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      -webkit-print-color-adjust: exact;
+    }
+    .slide {
+      width: 100%;
+      height: 100%;
+      padding: 16mm 22mm;
+      position: relative;
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+      overflow: hidden;
+    }
+    
+    /* Header styling */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 4mm;
+      margin-bottom: 5mm;
+    }
+    .slide-title-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .slide-logo {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+    }
+    .slide-title {
+      font-size: 22pt;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+    }
+    .slide-subtitle-tag {
+      font-size: 9.5pt;
+      background-color: #f1f5f9;
+      color: #475569;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid #cbd5e1;
+      font-weight: 600;
+    }
+
+    /* Footer styling */
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 3mm;
+      font-size: 9pt;
+      color: #64748b;
+    }
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-dot {
+      width: 4px;
+      height: 4px;
+      background-color: #6366f1;
+      border-radius: 50%;
+    }
+
+    /* Slide Content templates */
+    .slide-body {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+      align-items: center;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+    }
+    
+    /* Typography & Visual Blocks */
+    h3 {
+      color: #4f46e5;
+      font-size: 13pt;
+      margin-top: 0;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    p {
+      font-size: 11pt;
+      line-height: 1.5;
+      color: #475569;
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+    .accent-text {
+      color: #6366f1;
+      font-weight: 600;
+    }
+    
+    /* Lists */
+    ul.slide-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    ul.slide-list li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 10px;
+      font-size: 11pt;
+      line-height: 1.4;
+      color: #1e293b;
+    }
+    ul.slide-list li::before {
+      content: "✦";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: #6366f1;
+      font-weight: bold;
+    }
+    
+    /* Card Panel */
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    .card-title {
+      font-weight: bold;
+      color: #0f172a;
+      font-size: 12pt;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title-icon {
+      color: #6366f1;
+    }
+
+    /* Highlight box */
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(99,102,241,0.05) 0%, rgba(139,92,246,0.02) 100%);
+      border-left: 4px solid #6366f1;
+      padding: 12px 18px;
+      border-radius: 0 12px 12px 0;
+      margin-bottom: 12px;
+    }
+    
+    /* Code Snippets */
+    pre {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 10px;
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 8.5pt;
+      color: #a78bfa;
+      line-height: 1.3;
+    }
+
+    /* Screenshots */
+    .screenshot-container {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+      background-color: #f8fafc;
+    }
+    .screenshot-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .screenshot-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+      font-size: 8pt;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Cover Slide Styling */
+    .cover-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      height: 100%;
+    }
+    .univ-logo-sub {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #475569;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .univ-dept-sub {
+      font-size: 11pt;
+      color: #64748b;
+      letter-spacing: 1px;
+      margin-bottom: 30px;
+    }
+    .cover-badge {
+      width: 76px;
+      height: 76px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      font-weight: 800;
+      color: white;
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.25);
+      margin-bottom: 20px;
+    }
+    .cover-title-text {
+      font-size: 36pt;
+      font-weight: 800;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #475569 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0 0 8px 0;
+    }
+    .cover-subtitle-text {
+      font-size: 14pt;
+      color: #4f46e5;
+      font-weight: 600;
+      margin-bottom: 40px;
+      max-width: 750px;
+      line-height: 1.4;
+    }
+    .cover-meta-table {
+      width: 100%;
+      max-width: 800px;
+      margin-top: 10px;
+    }
+    .cover-meta-label {
+      font-size: 9.5pt;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .cover-meta-val {
+      font-size: 11.5pt;
+      color: #1e293b;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== SLIDE 1: TITLE SLIDE ==================== -->
+  <div class="slide" style="justify-content: space-between;">
+    <div></div>
+    
+    <div class="cover-body">
+      <div class="univ-logo-sub">Chandigarh University</div>
+      <div class="univ-dept-sub">Institute of Distance & Online Learning (IDOL)</div>
+      
+      <div class="cover-badge">Q</div>
+      <div class="cover-title-text">Quizminia</div>
+      <div class="cover-subtitle-text" style="margin-bottom: 20px;">AI-Adaptive Learning Platform with Real-Time Difficulty Adjustment</div>
+      <div style="font-size: 11.5pt; font-weight: bold; margin-bottom: 25px;">
+        Live Project URL: <a href="https://quizminia.examprap.click/" target="_blank" style="color: #4f46e5; text-decoration: none; border-bottom: 1px solid #4f46e5;">https://quizminia.examprap.click/</a>
+      </div>
+      
+      <table class="cover-meta-table" style="border: none; border-collapse: collapse;">
+        <tr>
+          <td style="width: 50%; text-align: left; padding: 0;">
+            <div class="cover-meta-label">Submitted By:</div>
+            <div class="cover-meta-val">Ritik</div>
+            <div class="cover-meta-val" style="font-size: 10pt; color: #475569; font-weight: normal;">University ID: 024MCA110654</div>
+            <div class="cover-meta-val" style="font-size: 10pt; color: #475569; font-weight: normal;">Master of Computer Applications (MCA)</div>
+          </td>
+          <td style="width: 50%; text-align: right; padding: 0;">
+            <div class="cover-meta-label">Supervised By:</div>
+            <div class="cover-meta-val">Suruchi Gupta</div>
+            <div class="cover-meta-val" style="font-size: 10pt; color: #475569; font-weight: normal;">Senior Mentor</div>
+            <div class="cover-meta-val" style="font-size: 10pt; color: #475569; font-weight: normal;">Senior Software Engineer & .NET Expert</div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    
+    <div class="slide-footer" style="border: none;">
+      <div style="font-size: 8.5pt; color: #475569;">Project Presentation &bull; Academic Session 2025-2026</div>
+      <div style="font-size: 8.5pt; color: #475569;">Slide 1 of 11</div>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 2: PROBLEM STATEMENT ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-area">
+        <div class="slide-logo">Q</div>
+        <h2 class="slide-title">Introduction & Problem Statement</h2>
+      </div>
+      <span class="slide-subtitle-tag">Background</span>
+    </div>
+    
+    <div class="slide-body grid-2" style="grid-template-columns: 0.95fr 1.05fr;">
+      <div>
+        <h3>The One-Size-Fits-All Deficit</h3>
+        <p>
+          Traditional online quiz environments treat all learners identically. They administer standard, linear questionnaires regardless of individual student cognitive boundaries.
+        </p>
+        <div class="highlight-box">
+          <p style="margin: 0; color: #1e293b; font-weight: 500; font-size: 10.5pt;">
+            Standard testing frameworks create cognitive overload for struggling students and trigger boredom for high-achievers.
+          </p>
+        </div>
+        <div class="card" style="margin-top: 15px; padding: 12px;">
+          <div class="card-title" style="font-size: 11pt; margin-bottom: 4px;">
+            <span class="card-title-icon">✕</span> Feedback Deficit
+          </div>
+          <p style="font-size: 9.5pt; margin: 0;">
+            Static explanations that ignore student error vectors and fail to tutor the student dynamically.
+          </p>
+        </div>
+      </div>
+      
+      <div class="screenshot-container">
+        <img class="screenshot-img" src="file:///home/developer/workspace/quizMinia/backend/scratch/screenshots/login.png" alt="Quizminia Login Screen">
+        <span class="screenshot-badge">Secure Portal Entry</span>
+      </div>
+    </div>
+    
+    <div class="slide-footer">
+      <div class="footer-left">
+        <span>Quizminia Presentation</span>
+        <div class="footer-dot"></div>
+        <span>Problem Definition</span>
+      </div>
+      <span>Slide 2 of 11</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 3: SYSTEM OBJECTIVES ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-area">
+        <div class="slide-logo">Q</div>
+        <h2 class="slide-title">System Objectives</h2>
+      </div>
+      <span class="slide-subtitle-tag">Project Goals</span>
+    </div>
+    
+    <div class="slide-body grid-2">
+      <div class="card" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
+        <h3 style="color: #6366f1;">The Quizminia Solution</h3>
+        <p>
+          Quizminia bridges the gap between evaluation and personalization. By incorporating an AI difficulty feedback controller and clean student analytics, the platform maintains a continuous flow zone for the student.
+        </p>
+        <p style="font-size: 10.5pt; font-style: italic; color: #4f46e5; margin-bottom: 0;">
+          "Keeping students challenged without causing frustration or cognitive fatigue."
+        </p>
+      </div>
+      
+      <div>
+        <ul class="slide-list">
+          <li>
+            <strong>Adaptive Question Routing:</strong> Adjusts difficulty dynamically (0.0 to 1.0) after every answer.
+          </li>
+          <li>
+            <strong>High System Availability:</strong> Implements a local rule-based safety fallback engine to handle Bedrock API offline states.
+          </li>
+          <li>
+            <strong>Intelligent Analytics:</strong> Tracks student strengths, weaknesses, and average difficulty baselines.
+          </li>
+          <li>
+            <strong>Robust Security Infrastructure:</strong> Employs PBKDF2 hashing, AES-256 session cookie encryption, and roles guards.
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="slide-footer">
+      <div class="footer-left">
+        <span>Quizminia Presentation</span>
+        <div class="footer-dot"></div>
+        <span>Project Objectives</span>
+      </div>
+      <span>Slide 3 of 11</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 4: SYSTEM ARCHITECTURE ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-area">
+        <div class="slide-logo">Q</div>
+        <h2 class="slide-title">System Architecture</h2>
+      </div>
+      <span class="slide-subtitle-tag">Architecture</span>
+    </div>
+    
+    <div class="slide-body grid-2" style="grid-template-columns: 1.15fr 0.85fr; gap: 20px;">
+      <!-- Diagram -->
+      <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px; display: flex; align-items: center; justify-content: center;">
+        <svg width="450" height="240" viewBox="0 0 450 240">
+          <!-- Client -->
+          <rect x="10" y="50" width="90" height="140" rx="6" fill="#f8fafc" stroke="#3b82f6" stroke-width="1.5"/>
+          <text x="55" y="70" font-family="Helvetica" font-size="10" font-weight="bold" fill="#1d4ed8" text-anchor="middle">Client Tier</text>
+          <rect x="20" y="90" width="70" height="20" rx="3" fill="#3b82f6"/>
+          <text x="55" y="103" font-family="Helvetica" font-size="8" fill="#ffffff" text-anchor="middle">EJS SSR</text>
+          <rect x="20" y="120" width="70" height="20" rx="3" fill="#3b82f6"/>
+          <text x="55" y="133" font-family="Helvetica" font-size="8" fill="#ffffff" text-anchor="middle">Chart.js</text>
+          <rect x="20" y="150" width="70" height="20" rx="3" fill="#3b82f6"/>
+          <text x="55" y="163" font-family="Helvetica" font-size="8" fill="#ffffff" text-anchor="middle">AES Cookie</text>
+ 
+          <!-- HTTP Line -->
+          <line x1="100" y1="120" x2="140" y2="120" stroke="#475569" stroke-width="1.5" stroke-dasharray="2"/>
+          <polygon points="140,117 145,120 140,123" fill="#475569"/>
+          <text x="120" y="112" font-family="Helvetica" font-size="7" fill="#475569" text-anchor="middle">HTTP</text>
+ 
+          <!-- Backend -->
+          <rect x="145" y="20" width="180" height="200" rx="6" fill="#faf5ff" stroke="#a855f7" stroke-width="1.5"/>
+          <text x="235" y="38" font-family="Helvetica" font-size="10" font-weight="bold" fill="#7e22ce" text-anchor="middle">NestJS Server</text>
+          
+          <rect x="155" y="55" width="160" height="25" rx="3" fill="#a855f7"/>
+          <text x="235" y="71" font-family="Helvetica" font-size="8" fill="#ffffff" text-anchor="middle" font-weight="bold">Controllers & Guards</text>
+ 
+          <rect x="155" y="90" width="160" height="75" rx="3" fill="#f3e8ff" stroke="#a855f7" stroke-width="0.75"/>
+          <text x="235" y="102" font-family="Helvetica" font-size="7" fill="#7e22ce" text-anchor="middle" font-weight="bold">Services Layer</text>
+          
+          <rect x="165" y="110" width="65" height="18" rx="2" fill="#ffffff" stroke="#a855f7"/>
+          <text x="197" y="121" font-family="Helvetica" font-size="7" fill="#7e22ce" text-anchor="middle">AiService</text>
+          <rect x="240" y="110" width="65" height="18" rx="2" fill="#ffffff" stroke="#a855f7"/>
+          <text x="272" y="121" font-family="Helvetica" font-size="7" fill="#7e22ce" text-anchor="middle">MailService</text>
+          <rect x="165" y="135" width="65" height="18" rx="2" fill="#ffffff" stroke="#a855f7"/>
+          <text x="197" y="146" font-family="Helvetica" font-size="7" fill="#7e22ce" text-anchor="middle">QuizAttempts</text>
+          <rect x="240" y="135" width="65" height="18" rx="2" fill="#ffffff" stroke="#a855f7"/>
+          <text x="272" y="146" font-family="Helvetica" font-size="7" fill="#7e22ce" text-anchor="middle">AuthService</text>
+ 
+          <rect x="155" y="175" width="160" height="25" rx="3" fill="#a855f7"/>
+          <text x="235" y="191" font-family="Helvetica" font-size="8" fill="#ffffff" text-anchor="middle" font-weight="bold">Sequelize ORM</text>
+ 
+          <!-- Bedrock Line -->
+          <line x1="200" y1="110" x2="200" y2="85" stroke="#ec4899" stroke-width="1.5"/>
+          <line x1="200" y1="85" x2="340" y2="85" stroke="#ec4899" stroke-width="1.5"/>
+          <polygon points="340,82 345,85 340,88" fill="#ec4899"/>
+          <text x="330" y="78" font-family="Helvetica" font-size="7" fill="#db2777" text-anchor="end">AWS SDK</text>
+ 
+          <!-- DB Line -->
+          <line x1="325" y1="187" x2="345" y2="187" stroke="#10b981" stroke-width="1.5"/>
+          <polygon points="345,184 350,187 345,190" fill="#10b981"/>
+ 
+          <!-- Bedrock Box -->
+          <rect x="345" y="60" width="95" height="50" rx="4" fill="#fdf2f8" stroke="#ec4899" stroke-width="1.5"/>
+          <text x="392" y="82" font-family="Helvetica" font-size="8" font-weight="bold" fill="#be185d" text-anchor="middle">AWS Bedrock</text>
+          <text x="392" y="94" font-family="Helvetica" font-size="7" fill="#9d174d" text-anchor="middle">Gemma 3 4B</text>
+ 
+          <!-- MySQL Box -->
+          <rect x="350" y="150" width="90" height="70" rx="4" fill="#f0fdf4" stroke="#10b981" stroke-width="1.5"/>
+          <text x="395" y="180" font-family="Helvetica" font-size="9" font-weight="bold" fill="#15803d" text-anchor="middle">MySQL DB</text>
+          <text x="395" y="195" font-family="Helvetica" font-size="7" fill="#166534" text-anchor="middle">8 Tables Schema</text>
+        </svg>
+      </div>
+ 
+      <!-- Tech stack list -->
+      <div>
+        <h3>Framework Tech Stack</h3>
+        <p>
+          Quizminia leverages a highly modular and secure framework combination to ensure enterprise stability:
+        </p>
+        <ul class="slide-list" style="margin-top: 8px;">
+          <li>
+            <strong style="color: #7e22ce;">NestJS 11 & TypeScript:</strong> Strict MVC controller-service separation, enabling testable and maintainable core code.
+          </li>
+          <li>
+            <strong style="color: #15803d;">Sequelize ORM & MySQL 8:</strong> Transaction-safe schema definitions with robust relational query parameters.
+          </li>
+          <li>
+            <strong style="color: #be185d;">AWS Bedrock & Gemma 3:</strong> Cloud-based serverless execution of the 4B parameters LLM for instant response scoring.
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="slide-footer">
+      <div class="footer-left">
+        <span>Quizminia Presentation</span>
+        <div class="footer-dot"></div>
+        <span>System Architecture</span>
+      </div>
+      <span>Slide 4 of 11</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 5: DATABASE SCHEMA ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-area">
+        <div class="slide-logo">Q</div>
+        <h2 class="slide-title">Database Design & Schema</h2>
+      </div>
+      <span class="slide-subtitle-tag">Database Schema</span>
+    </div>
+    
+    <div class="slide-body grid-2">
+      <div>
+        <h3>Relational Entity Layout</h3>
+        <p>
+          The MySQL schema consists of 8 tables structured with strict foreign keys and automated database level cascades:
+        </p>
+        <ul class="slide-list">
+          <li><strong>Users & Roles:</strong> Separates students, teachers, and admins, storing PBKDF2 hashes and performance baseline profiles.</li>
+          <li><strong>Quizzes & Questions:</strong> Base entities containing subject categories, base difficulty scores, and questions.</li>
+          <li><strong>Attempts & Answers:</strong> Tracks live attempt indicators, accuracy streaks, response feedback, and custom AI insights.</li>
+        </ul>
+      </div>
+      
+      <!-- Table Schema Panel -->
+      <div class="card" style="padding: 15px;">
+        <h4 style="color: #4f46e5; margin-top:0; margin-bottom:8px; font-size:11pt; text-transform:uppercase;">Core Entities Schema</h4>
+        <div style="font-family: monospace; font-size: 9pt; line-height: 1.5; color: #475569;">
+          <div style="margin-bottom: 5px;"><strong style="color: #0f172a;">users:</strong> [id, email, password, roleId, firstName, performanceProfile]</div>
+          <div style="margin-bottom: 5px;"><strong style="color: #0f172a;">quizzes:</strong> [id, title, subject, difficulty, timeLimit, createdBy]</div>
+          <div style="margin-bottom: 5px;"><strong style="color: #0f172a;">questions:</strong> [id, quizId, text, options, correctAnswer, difficultyScore]</div>
+          <div style="margin-bottom: 5px;"><strong style="color: #0f172a;">quiz_attempts:</strong> [id, userId, quizId, currentDifficulty, score, status]</div>
+          <div style="margin-bottom: 5px;"><strong style="color: #0f172a;">quiz_attempt_answers:</strong> [id, attemptId, questionId, selectedOption, isCorrect]</div>
+          <div style="margin-bottom: 5px;"><strong style="color: #0f172a;">notifications:</strong> [id, userId, title, message, type, isRead]</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="slide-footer">
+      <div class="footer-left">
+        <span>Quizminia Presentation</span>
+        <div class="footer-dot"></div>
+        <span>Database Design</span>
+      </div>
+      <span>Slide 5 of 11</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 6: ADAPTIVE TESTING ENGINE ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-area">
+        <div class="slide-logo">Q</div>
+        <h2 class="slide-title">AI Adaptive Engine & Feedback Loop</h2>
+      </div>
+      <span class="slide-subtitle-tag">AI Adaptation</span>
+    </div>
+    
+    <div class="slide-body grid-2">
+      <!-- Description -->
+      <div>
+        <h3>Real-Time Loop Calibration</h3>
+        <p>
+          Difficulty sits on a float scale from <code>0.0</code> (easiest) to <code>1.0</code> (hardest). The closed-loop controller behaves as follows:
+        </p>
+        <ul class="slide-list">
+          <li><strong>Answer Submission:</strong> Student answer triggers streak calculations.</li>
+          <li><strong>AI Inference:</strong> The <code>AiService</code> packages history, streaks, and scores, calling Gemma 3 on AWS Bedrock for a new difficulty target.</li>
+          <li><strong>Adaptive Matching:</strong> The engine selects the closest unanswered question matching the target difficulty from the database pool.</li>
+        </ul>
+      </div>
+
+      <!-- Visual Loop SVG -->
+      <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; display: flex; align-items: center; justify-content: center; height: 100%;">
+        <svg width="350" height="180" viewBox="0 0 350 180">
+          <!-- Step 1 -->
+          <rect x="10" y="60" width="90" height="50" rx="4" fill="#e0f2fe" stroke="#3b82f6" stroke-width="1.5"/>
+          <text x="55" y="85" font-family="Helvetica" font-size="8" font-weight="bold" fill="#0369a1" text-anchor="middle">1. Answer Submit</text>
+          <text x="55" y="97" font-family="Helvetica" font-size="7" fill="#0284c7" text-anchor="middle">Grades & streaks</text>
+
+          <!-- Arrow 1-2 -->
+          <line x1="100" y1="85" x2="130" y2="85" stroke="#3b82f6" stroke-width="1.5"/>
+          <polygon points="130,82 135,85 130,88" fill="#3b82f6"/>
+
+          <!-- Step 2 -->
+          <rect x="135" y="60" width="90" height="50" rx="4" fill="#faf5ff" stroke="#a855f7" stroke-width="1.5"/>
+          <text x="180" y="85" font-family="Helvetica" font-size="8" font-weight="bold" fill="#7e22ce" text-anchor="middle">2. Bedrock LLM</text>
+          <text x="180" y="97" font-family="Helvetica" font-size="7" fill="#6b21a8" text-anchor="middle">Target [0.0, 1.0]</text>
+
+          <!-- Arrow 2-3 -->
+          <line x1="225" y1="85" x2="245" y2="85" stroke="#a855f7" stroke-width="1.5"/>
+          <polygon points="245,82 250,85 245,88" fill="#a855f7"/>
+
+          <!-- Step 3 -->
+          <rect x="250" y="60" width="90" height="50" rx="4" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+          <text x="295" y="85" font-family="Helvetica" font-size="8" font-weight="bold" fill="#047857" text-anchor="middle">3. Serve Match</text>
+          <text x="295" y="97" font-family="Helvetica" font-size="7" fill="#059669" text-anchor="middle">Match difficulty</text>
+
+          <!-- Return Loop Line -->
+          <path d="M 295 110 L 295 140 L 55 140 L 55 110" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3"/>
+          <polygon points="52,112 55,107 58,112" fill="#94a3b8"/>
+          <text x="175" y="135" font-family="Helvetica" font-size="7" fill="#475569" text-anchor="middle">Repeat Loop for next question</text>
+        </svg>
+      </div>
+    </div>
+    
+    <div class="slide-footer">
+      <div class="footer-left">
+        <span>Quizminia Presentation</span>
+        <div class="footer-dot"></div>
+        <span>AI Engine</span>
+      </div>
+      <span>Slide 6 of 11</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 7: RULE-BASED FALLBACK ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-area">
+        <div class="slide-logo">Q</div>
+        <h2 class="slide-title">Rule-Based Safety Fallback Controller</h2>
+      </div>
+      <span class="slide-subtitle-tag">Resilience</span>
+    </div>
+    
+    <div class="slide-body grid-2">
+      <div>
+        <h3>High Availability Safeguards</h3>
+        <p>
+          External LLM APIs face latencies, credential expirations, or rate limits. To guarantee uninterrupted test attempts, Quizminia incorporates a local deterministic fallback engine.
+        </p>
+        <div class="highlight-box">
+          <p style="margin: 0; color: #1e293b; font-size: 10.5pt;">
+            If Bedrock fails, the exception is caught, and difficulty scales rules-based according to streak dynamics.
+          </p>
+        </div>
+      </div>
+
+      <!-- Code & Rules -->
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <pre>
+// Rule-based Fallback Step Math
+if (isCorrect) {
+  if (correctStreak >= 3) diff += 0.20;
+  else if (correctStreak == 2) diff += 0.10;
+  else diff += 0.05;
+} else {
+  if (wrongStreak >= 3) diff -= 0.20;
+  else if (wrongStreak == 2) diff -= 0.10;
+  else diff -= 0.05;
+}
+diff = Math.max(0, Math.min(1, diff));</pre>
+        <div style="font-size: 9pt; color: #64748b; font-style: italic;">
+          Guarantees zero-downtime test completion on poor network connections.
+        </div>
+      </div>
+    </div>
+    
+    <div class="slide-footer">
+      <div class="footer-left">
+        <span>Quizminia Presentation</span>
+        <div class="footer-dot"></div>
+        <span>Safety Fallback</span>
+      </div>
+      <span>Slide 7 of 11</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 8: STUDENT DASHBOARD ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-area">
+        <div class="slide-logo">Q</div>
+        <h2 class="slide-title">Student Portal & Interactive Analytics</h2>
+      </div>
+      <span class="slide-subtitle-tag">Student Dashboard</span>
+    </div>
+    
+    <div class="slide-body grid-2" style="grid-template-columns: 0.95fr 1.05fr;">
+      <div>
+        <h3>Performance Tracking & History</h3>
+        <p>
+          Students access a dedicated page containing historical quiz scores, active attempts, and weakness metrics:
+        </p>
+        <ul class="slide-list">
+          <li><strong>Real-Time Graphing:</strong> Chart.js charts plot student scores and difficulty parameters across quizzes.</li>
+          <li><strong>Adaptive Profiles:</strong> System maps strengths/weaknesses and details current baseline levels.</li>
+          <li><strong>Notifications Inbox:</strong> Receives alerts when new tests are configured.</li>
+        </ul>
+      </div>
+
+      <div class="screenshot-container">
+        <img class="screenshot-img" src="file:///home/developer/workspace/quizMinia/backend/scratch/screenshots/student_dashboard.png" alt="Quizminia Student Dashboard">
+        <span class="screenshot-badge">Student Dashboard View</span>
+      </div>
+    </div>
+    
+    <div class="slide-footer">
+      <div class="footer-left">
+        <span>Quizminia Presentation</span>
+        <div class="footer-dot"></div>
+        <span>Student Workspace</span>
+      </div>
+      <span>Slide 8 of 11</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 9: TEACHER DASHBOARD ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-area">
+        <div class="slide-logo">Q</div>
+        <h2 class="slide-title">Teacher Portal & Quiz Architectures</h2>
+      </div>
+      <span class="slide-subtitle-tag">Teacher Dashboard</span>
+    </div>
+    
+    <div class="slide-body grid-2" style="grid-template-columns: 0.95fr 1.05fr;">
+      <div>
+        <h3>Management & Assessment Controls</h3>
+        <p>
+          Educators have specialized controls to design and grade assessments efficiently:
+        </p>
+        <ul class="slide-list">
+          <li><strong>Quiz CRUD Builder:</strong> Define subjects, difficulty, time constraints, and questions.</li>
+          <li><strong>Student Insights:</strong> Track average classroom scores, pass rates, and completion times.</li>
+          <li><strong>AI Generation:</strong> Automated question suggestions matching difficulty metrics.</li>
+        </ul>
+      </div>
+
+      <div class="screenshot-container">
+        <img class="screenshot-img" src="file:///home/developer/workspace/quizMinia/backend/scratch/screenshots/teacher_dashboard.png" alt="Quizminia Teacher Dashboard">
+        <span class="screenshot-badge">Teacher Dashboard View</span>
+      </div>
+    </div>
+    
+    <div class="slide-footer">
+      <div class="footer-left">
+        <span>Quizminia Presentation</span>
+        <div class="footer-dot"></div>
+        <span>Teacher Workspace</span>
+      </div>
+      <span>Slide 9 of 11</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 10: SECURITY & CRYPTOGRAPHY ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-area">
+        <div class="slide-logo">Q</div>
+        <h2 class="slide-title">Security & Session Framework</h2>
+      </div>
+      <span class="slide-subtitle-tag">Security</span>
+    </div>
+    
+    <div class="slide-body grid-2">
+      <div class="card" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
+        <h3 style="color: #f43f5e;">System Protection Layers</h3>
+        <p>
+          Student data privacy is enforced backend-side. The system implements cryptography models rather than relying on basic text storage:
+        </p>
+        <p style="font-size: 10pt; color: #db2777; margin: 0; font-family: monospace;">
+          AES-256-CBC Session Encryption + PBKDF2 SHA-512 Password Verification
+        </p>
+      </div>
+
+      <div>
+        <ul class="slide-list">
+          <li>
+            <strong>PBKDF2 Password Hashing:</strong> Avoids database exposures by executing 1000 iterations of SHA-512 key stretching with unique salts.
+          </li>
+          <li>
+            <strong>AES-256 Cookie Encryption:</strong> Session identifiers are encrypted using AES-256-CBC with an initialization vector, decrypted server-side in session middleware.
+          </li>
+          <li>
+            <strong>Guards & Middleware:</strong> Role-based guards protect specific teacher/admin routes, returning HTTP 403 Forbidden on unauthorized breaches.
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="slide-footer">
+      <div class="footer-left">
+        <span>Quizminia Presentation</span>
+        <div class="footer-dot"></div>
+        <span>Security</span>
+      </div>
+      <span>Slide 10 of 11</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 11: CONCLUSION & FUTURE SCOPE ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-area">
+        <div class="slide-logo">Q</div>
+        <h2 class="slide-title">Conclusion & Future Enhancements</h2>
+      </div>
+      <span class="slide-subtitle-tag">Conclusion</span>
+    </div>
+    
+    <div class="slide-body grid-2">
+      <div>
+        <h3>Project Summary</h3>
+        <p>
+          Quizminia establishes that combining server-side MVC architecture with cloud-based Large Language Models makes it possible to generate highly personalized learning spaces.
+        </p>
+        <p>
+          The platform scales efficiently, keeps student engagement elevated, and prevents the traditional testing dropouts seen in linear examination portals.
+        </p>
+      </div>
+
+      <div class="card">
+        <h4 style="color: #6366f1; margin-top:0; margin-bottom:8px; font-size:10.5pt; text-transform:uppercase;">Future Road Map</h4>
+        <ul class="slide-list" style="margin: 0;">
+          <li style="font-size: 10pt; margin-bottom: 6px;"><strong>Multi-lingual Engine:</strong> Dynamically generate assessments in multiple regional languages.</li>
+          <li style="font-size: 10pt; margin-bottom: 6px;"><strong>AI Chat Tutor:</strong> Interactive chat interface to discuss weaknesses immediately after quiz completion.</li>
+          <li style="font-size: 10pt; margin-bottom: 0;"><strong>Mobile Applications:</strong> Deploy cross-platform React Native clients.</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="slide-footer">
+      <div class="footer-left">
+        <span>Quizminia Presentation</span>
+        <div class="footer-dot"></div>
+        <span>Conclusion</span>
+      </div>
+      <span>Slide 11 of 11</span>
+    </div>
+  </div>
+
+</body>
+</html>
