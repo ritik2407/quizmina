@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizMinia - AI-Adaptive Learning Platform Presentation</title>
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --bg-card: rgba(17, 24, 39, 0.7);
+      --bg-sidebar: #0f172a;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-primary: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.45);
+      --accent-secondary: #10b981;
+      --accent-secondary-glow: rgba(16, 185, 129, 0.3);
+      --accent-purple: #8b5cf6;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+    }
+
+    /* Background Glow Effects */
+    .glow-bg {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-glow) 0%, rgba(59, 130, 246, 0) 70%);
+      top: -200px;
+      right: -200px;
+      z-index: 0;
+      pointer-events: none;
+      filter: blur(80px);
+      opacity: 0.5;
+    }
+
+    .glow-bg-2 {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-secondary-glow) 0%, rgba(16, 185, 129, 0) 70%);
+      bottom: -150px;
+      left: -150px;
+      z-index: 0;
+      pointer-events: none;
+      filter: blur(80px);
+      opacity: 0.4;
+    }
+
+    /* Sidebar Navigation */
+    aside {
+      width: 320px;
+      background-color: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      z-index: 10;
+      position: relative;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .sidebar-header h1 {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 30%, var(--accent-primary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-header p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .slide-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      list-style: none;
+    }
+
+    .slide-item {
+      padding: 12px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid transparent;
+    }
+
+    .slide-item:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--text-main);
+    }
+
+    .slide-item.active {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: #fff;
+      border-color: rgba(59, 130, 246, 0.25);
+      font-weight: 500;
+    }
+
+    .slide-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .active .slide-num {
+      background-color: var(--accent-primary);
+      color: #fff;
+    }
+
+    /* Main Content Area */
+    main {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      z-index: 5;
+    }
+
+    header {
+      height: 70px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 40px;
+    }
+
+    .theme-badge {
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .slide-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .control-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      font-size: 1.2rem;
+    }
+
+    .control-btn:hover {
+      background-color: var(--accent-primary);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .slide-progress-bar {
+      flex: 1;
+      height: 4px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+      margin: 0 20px;
+      max-width: 200px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--accent-primary);
+      width: 5%;
+      transition: width 0.3s ease;
+    }
+
+    /* Slides Container */
+    .slides-viewport {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      padding: 40px;
+    }
+
+    .slide-container {
+      position: absolute;
+      top: 40px;
+      left: 40px;
+      right: 40px;
+      bottom: 40px;
+      display: flex;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      pointer-events: none;
+      background-color: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .slide-container.active-slide {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Slide Layouts */
+    .slide-content-left {
+      flex: 1.1;
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    .slide-visual-right {
+      flex: 0.9;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      position: relative;
+    }
+
+    /* Full Width layouts */
+    .slide-full-width {
+      flex: 1;
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    /* Slide Typography */
+    .slide-title-area {
+      margin-bottom: 28px;
+    }
+
+    .slide-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent-primary);
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+
+    .slide-title {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .slide-description {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    /* Lists and Cards */
+    .bullet-list {
+      list-style: none;
+    }
+
+    .bullet-item {
+      position: relative;
+      padding-left: 28px;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text-main);
+    }
+
+    .bullet-item::before {
+      content: "✦";
+      position: absolute;
+      left: 0;
+      color: var(--accent-primary);
+      font-size: 1.1rem;
+      top: -1px;
+    }
+
+    .bullet-item strong {
+      color: #fff;
+    }
+
+    /* Architecture grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 16px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(59, 130, 246, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Code Display */
+    pre {
+      background-color: #030712;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      line-height: 1.4;
+      overflow-x: auto;
+      color: #38bdf8;
+      width: 100%;
+      max-height: 250px;
+    }
+
+    code {
+      font-family: var(--font-mono);
+    }
+
+    /* Screen Frame */
+    .screen-frame {
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      background-color: #1e293b;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .screen-header {
+      height: 24px;
+      background-color: #0f172a;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 6px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .screen-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .dot-red { background-color: #ef4444; }
+    .dot-yellow { background-color: #eab308; }
+    .dot-green { background-color: #22c55e; }
+
+    .screen-address {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+      height: 14px;
+      flex: 1;
+      max-width: 300px;
+      margin: 0 auto;
+      font-size: 0.6rem;
+      display: flex;
+      align-items: center;
+      padding-left: 8px;
+      color: var(--text-muted);
+    }
+
+    .screen-content {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background-color: #0b0f19;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .screen-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Table Customization */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    th {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: #fff;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    td {
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    tr:hover td {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Screenshot Slide Layouts (Top Text, Bottom Screenshot) */
+    .slide-vertical-screenshot {
+      flex-direction: column !important;
+      padding: 32px 40px 16px 40px;
+    }
+
+    .slide-top-info {
+      display: flex;
+      justify-content: space-between;
+      gap: 32px;
+      margin-bottom: 16px;
+      flex-shrink: 0;
+    }
+
+    .slide-info-left {
+      flex: 1;
+    }
+
+    .slide-info-right {
+      flex: 1.2;
+    }
+
+    .slide-info-right .bullet-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    @media (min-width: 900px) {
+      .slide-info-right .bullet-list {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 24px;
+      }
+    }
+
+    .slide-info-right .bullet-item {
+      margin-bottom: 0;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .slide-bottom-visual {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .slide-bottom-visual .screen-frame {
+      width: 100%;
+      max-width: 960px;
+      height: 100%;
+      max-height: 380px;
+    }
+
+    /* Cover Slide Styling */
+    .cover-slide-content {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .cover-logo {
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, var(--accent-primary) 0%, var(--accent-purple) 100%);
+      border-radius: 24px;
+      margin-bottom: 32px;
+      box-shadow: 0 0 40px var(--accent-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 3rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .cover-title {
+      font-family: var(--font-heading);
+      font-size: 3.8rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 16px;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+    }
+
+    .cover-title span {
+      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .cover-subtitle {
+      font-size: 1.4rem;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 160px);
+      gap: 32px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 32px;
+      margin-top: 16px;
+    }
+
+    .meta-item h5 {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .meta-item p {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* Badge labels */
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+    
+    .badge-primary { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .badge-success { background-color: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .badge-warning { background-color: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+
+    /* Footer Meta */
+    .slide-footer {
+      margin-top: auto;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Mermaid Architecture Styling */
+    .architecture-box {
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+      padding: 12px;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.01);
+      margin-bottom: 8px;
+    }
+
+    .architecture-box.highlight {
+      border-color: var(--accent-primary);
+      background-color: rgba(59, 130, 246, 0.02);
+    }
+
+    .architecture-title {
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .architecture-details {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* Grid Layout Toggle View */
+    .grid-view-container {
+      display: none;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 40px;
+      overflow-y: auto;
+      height: calc(100vh - 70px);
+      z-index: 6;
+      background-color: var(--bg-dark);
+      position: absolute;
+      top: 70px;
+      left: 320px;
+      right: 0;
+      bottom: 0;
+    }
+
+    .grid-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      aspect-ratio: 16/10;
+      justify-content: space-between;
+    }
+
+    .grid-card:hover {
+      border-color: var(--accent-primary);
+      transform: scale(1.02);
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+    }
+
+    .grid-card-num {
+      font-size: 0.75rem;
+      color: var(--accent-primary);
+      font-weight: 700;
+    }
+
+    .grid-card-title {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 8px;
+    }
+
+    .grid-card-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .grid-card-tag {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-primary);
+      margin-top: 12px;
+    }
+
+    /* Utility to hide/show aside */
+    .collapsed-sidebar aside {
+      display: none;
+    }
+    
+    .collapsed-sidebar .grid-view-container {
+      left: 0;
+    }
+    
+    /* Print Stylesheet for Landscape PDF Generation */
+    @media print {
+      aside, header, .glow-bg, .glow-bg-2, .slide-controls, #toggleSidebar, #toggleGrid, #prevBtn, #nextBtn, .slide-progress-bar {
+        display: none !important;
+      }
+      
+      body, html {
+        background-color: #090d16 !important;
+        color: #f3f4f6 !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+      
+      main {
+        padding: 0 !important;
+        margin: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+      
+      .slides-viewport {
+        padding: 0 !important;
+        margin: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+      
+      .slide-container {
+        position: relative !important;
+        display: flex !important;
+        opacity: 1 !important;
+        transform: none !important;
+        pointer-events: auto !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        padding: 48px !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background-color: #090d16 !important;
+        backdrop-filter: none !important;
+      }
+
+      .slide-content-left {
+        padding: 24px !important;
+      }
+
+      .slide-visual-right {
+        padding: 16px !important;
+        border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+      }
+
+      .slide-vertical-screenshot {
+        padding: 32px !important;
+      }
+
+      .slide-bottom-visual .screen-frame {
+        max-height: 420px !important;
+      }
+
+      pre {
+        max-height: none !important;
+      }
+
+      @page {
+        size: landscape;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-bg"></div>
+  <div class="glow-bg-2"></div>
+
+  <!-- Sidebar -->
+  <aside>
+    <div class="sidebar-header">
+      <h1>QuizMinia</h1>
+      <p>AI-Adaptive Learning Platform Overview</p>
+    </div>
+    <ul class="slide-list" id="slideList">
+      <!-- Generated Dynamically -->
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main>
+    <header>
+      <div class="slide-controls">
+        <button class="control-btn" id="toggleSidebar" title="Toggle Sidebar">☰</button>
+        <button class="control-btn" id="toggleGrid" title="Toggle Grid View">⊞</button>
+        <div class="theme-badge">
+          <span>●</span> Active Presentation
+        </div>
+      </div>
+      <div class="slide-controls">
+        <button class="control-btn" id="prevBtn" title="Previous Slide (← or Space+Shift)">‹</button>
+        <div class="slide-progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <span style="font-size: 0.85rem; min-width: 50px; text-align: center;" id="slideIndexLabel">1 / 20</span>
+        <button class="control-btn" id="nextBtn" title="Next Slide (→ or Space)">›</button>
+      </div>
+    </header>
+
+    <!-- Viewport for Single Slide -->
+    <div class="slides-viewport" id="slidesViewport">
+      
+      <!-- Slide 1: Cover -->
+      <div class="slide-container" data-slide="1">
+        <div class="slide-full-width">
+          <div class="cover-slide-content">
+            <div class="cover-logo">Q</div>
+            <h1 class="cover-title">Quiz<span>Minia</span></h1>
+            <p class="cover-subtitle">Next-Generation AI-Adaptive Learning Platform</p>
+            
+            <div class="meta-grid">
+              <div class="meta-item">
+                <h5>Architecture</h5>
+                <p>NestJS & Sequelize</p>
+              </div>
+              <div class="meta-item">
+                <h5>AI Engine</h5>
+                <p>AWS Bedrock</p>
+              </div>
+              <div class="meta-item">
+                <h5>Scope</h5>
+                <p>20-Page Deep Dive</p>
+              </div>
+            </div>
+            
+            <div class="slide-footer" style="width: 100%; margin-top: 60px;">
+              <span>Technical Project Analysis & Slide Deck</span>
+              <span>Slide 1 of 20</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2: Executive Summary -->
+      <div class="slide-container" data-slide="2">
+        <div class="slide-content-left">
+          <div class="slide-title-area">
+            <span class="slide-tag">Overview</span>
+            <h2 class="slide-title">Executive Summary</h2>
+          </div>
+          <p class="slide-description">
+            QuizMinia represents a paradigm shift in digital testing, combining a highly modular backend with an intelligent personalization layer.
+          </p>
+          <ul class="bullet-list">
+            <li class="bullet-item"><strong>Objective:</strong> Dynamically personalizes evaluation questions in real-time, placing students in their optimal learning zone.</li>
+            <li class="bullet-item"><strong>Backend Design:</strong> Powered by NestJS 11 and Sequelize ORM, implementing role-based modular code.</li>
+            <li class="bullet-item"><strong>AI Capabilities:</strong> Connects to AWS Bedrock runtime running Google Gemma 3, providing adaptive grading, targeted question selection, and written performance insights.</li>
+            <li class="bullet-item"><strong>Security:</strong> Features AES-256 encrypted session tokens, constant-time hashing, and paranoid model tracking.</li>
+          </ul>
+          <div class="slide-footer">
+            <span>QuizMinia Presentation</span>
+            <span>Slide 2 of 20</span>
+          </div>
+        </div>
+        <div class="slide-visual-right">
+          <div class="card" style="width: 85%;">
+            <div class="card-title">💡 Core Strengths</div>
+            <p class="card-text" style="margin-bottom: 12px;">• <strong>Scalability:</strong> Highly modularized NestJS services.</p>
+            <p class="card-text" style="margin-bottom: 12px;">• <strong>Stability:</strong> Graceful fallback to rule-based logic if API fails.</p>
+            <p class="card-text">• <strong>Insights:</strong> Detailed strengths/weaknesses profiling for every attempt.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3: Problem Statement & Solution -->
+      <div class="slide-container" data-slide="3">
+        <div class="slide-content-left">
+          <div class="slide-title-area">
+            <span class="slide-tag">Problem & Solution</span>
+            <h2 class="slide-title">The Personalization Gap</h2>
+          </div>
+          <p class="slide-description">
+            Traditional testing mechanisms treat all candidates equally, resulting in poor engagement and inaccurate competency assessment.
+          </p>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-title" style="color: #f87171;">⚠️ The Problem</div>
+              <p class="card-text">
+                Static assessments cause frustration for lower-ability candidates and boredom for higher-ability ones, resulting in lost learning momentum.
+              </p>
+            </div>
+            <div class="card">
+              <div class="card-title" style="color: #34d399;">✓ The Solution</div>
+              <p class="card-text">
+                Real-time difficulty steering. By matching the difficulty of the next question to the student's current proficiency, we keep them engaged in the "Zone of Proximal Development".
+              </p>
+            </div>
+          </div>
+          <div class="slide-footer" style="margin-top: 40px;">
+            <span>QuizMinia Presentation</span>
+            <span>Slide 3 of 20</span>
+          </div>
+        </div>
+        <div class="slide-visual-right">
+          <div style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+            <div style="font-size: 4rem; color: var(--accent-primary);">📈</div>
+            <p style="color: #fff; font-weight: 600; margin-top: 10px;">Dynamic Adaptivity Curve</p>
+            <p style="margin-top: 5px;">Keeps student engagement and accuracy optimal</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4: High-Level System Architecture -->
+      <div class="slide-container" data-slide="4">
+        <div class="slide-content-left">
+          <div class="slide-title-area">
+            <span class="slide-tag">Architecture</span>
+            <h2 class="slide-title">System Architecture</h2>
+          </div>
+          <p class="slide-description">
+            QuizMinia adopts a standard clean Model-View-Controller (MVC) architecture with isolated feature modules in NestJS.
+          </p>
+          <div class="architecture-box highlight">
+            <div class="architecture-title">1. Presentation Layer (EJS + Chart.js)</div>
+            <div class="architecture-details">Serves responsive pages, parses cookie-based sessions, and visualizes student learning curves.</div>
+          </div>
+          <div class="architecture-box">
+            <div class="architecture-title">2. Controller / Logic Layer (NestJS Controllers & Services)</div>
+            <div class="architecture-details">Coordinates auth, quiz attempts, and schedules. Implements guards & validation pipes.</div>
+          </div>
+          <div class="architecture-box">
+            <div class="architecture-title">3. Data & AI Integrations (Sequelize ORM & AWS Bedrock Client)</div>
+            <div class="architecture-details">MySQL database containing Soft-Deleted paranoid tables, connected to AWS Bedrock via SDK.</div>
+          </div>
+          <div class="slide-footer">
+            <span>QuizMinia Presentation</span>
+            <span>Slide 4 of 20</span>
+          </div>
+        </div>
+        <div class="slide-visual-right">
+          <div class="card" style="width: 90%;">
+            <div class="card-title">🔗 Data Flows</div>
+            <pre style="font-size: 0.7rem; color: #a5f3fc;">
+Client Request
+   ↓
+RequestMiddleware (Session decryption)
+   ↓
+AuthGuard / RolesGuard (Permissions)
+   ↓
+QuizAttemptsController
+   ↓
+QuizAttemptsService (Attempt steering)
+   ↓
+AiService (AWS Bedrock or Fallback)
+   ↓
+Database (Save Answer + Update Profile)
+            </pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 5: Core Tech Stack -->
+      <div class="slide-container" data-slide="5">
+        <div class="slide-full-width">
+          <div class="slide-title-area">
+            <span class="slide-tag">Technology</span>
+            <h2 class="slide-title">Core Tech Stack</h2>
+          </div>
+          <p class="slide-description">
+            Selected for high speed, relational reliability, and robust typings.
+          </p>
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Layer</th>
+                <th>Technology</th>
+                <th>Version</th>
+                <th>Role & Rationale</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Framework</strong></td>
+                <td>NestJS</td>
+                <td>11.0.1</td>
+                <td>Highly modular architecture, strong Dependency Injection, native Schedule/Cron support.</td>
+              </tr>
+              <tr>
+                <td><strong>Database Engine</strong></td>
+                <td>MySQL</td>
+                <td>8.0</td>
+                <td>Structured, relational database capable of indexing nested attempts and users.</td>
+              </tr>
+              <tr>
+                <td><strong>ORM Layer</strong></td>
+                <td>Sequelize</td>
+                <td>6.37.8</td>
+                <td>Enables raw TS models mapping, pre-save hooks, and paranoid soft deletes.</td>
+              </tr>
+              <tr>
+                <td><strong>AI Adaptivity</strong></td>
+                <td>AWS Bedrock API</td>
+                <td>SDK v3</td>
+                <td>Serves Google Gemma 3 (4B model) for lightning-fast real-time inference responses.</td>
+              </tr>
+              <tr>
+                <td><strong>Mail / SMTP</strong></td>
+                <td>Nodemailer</td>
+                <td>9.0.3</td>
+                <td>Handles welcome, quiz result, and AI scheduler reminder email dispatch.</td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <div class="slide-footer" style="margin-top: 40px;">
+            <span>QuizMinia Presentation</span>
+            <span>Slide 5 of 20</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 6: Database Schema & Entity Relationships -->
+      <div class="slide-container" data-slide="6">
+        <div class="slide-content-left">
+          <div class="slide-title-area">
+            <span class="slide-tag">Data Model</span>
+            <h2 class="slide-title">Database Schema & Key Entities</h2>
+          </div>
+          <p class="slide-description">
+            The schema relies on well-defined foreign keys to track quiz progress and individual student profiles.
+          </p>
+          <ul class="bullet-list">
+            <li class="bullet-item"><strong>Roles:</strong> Three static roles (1: Admin, 2: Teacher, 3: Student) defining route permissions.</li>
+            <li class="bullet-item"><strong>Users:</strong> Stores scores, attempts count, and `performanceProfile` (JSON details of strengths and weaknesses).</li>
+            <li class="bullet-item"><strong>Quizzes & Questions:</strong> Quizzes host MCQ or short questions, each with a target difficulty score (0.0 to 1.0).</li>
+            <li class="bullet-item"><strong>Attempts & Answers:</strong> Attempts track `currentDifficultyScore`. Answer records track each submission's accuracy and difficulty snapshot.</li>
+          </ul>
+          <div class="slide-footer">
+            <span>QuizMinia Presentation</span>
+            <span>Slide 6 of 20</span>
+          </div>
+        </div>
+        <div class="slide-visual-right">
+          <div class="card" style="width: 90%;">
+            <div class="card-title">🌐 Paranoid Deletes</div>
+            <p class="card-text" style="margin-bottom: 8px;">
+              All critical tables (Users, Quizzes, Questions) inherit soft delete capabilities.
+            </p>
+            <pre style="color: #6ee7b7; font-size: 0.65rem;">
+// Sequelize Definition
+{
+  paranoid: true,
+  timestamps: true,
+  deletedAt: 'deletedAt'
+}
+            </pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 7: Security: Cookie-Based Sessions -->
+      <div class="slide-container" data-slide="7">
+        <div class="slide-content-left">
+          <div class="slide-title-area">
+            <span class="slide-tag">Security</span>
+            <h2 class="slide-title">Cookie-Based Custom Sessions</h2>
+          </div>
+          <p class="slide-description">
+            The application secures session cookies directly on the server side using custom encryption rather than storing sensitive payloads in plaintext.
+          </p>
+          <ul class="bullet-list">
+            <li class="bullet-item"><strong>Middleware Verification:</strong> `RequestMiddleware` intercepts cookies, decrypts them using AES-256-CBC and the project's secret `APP_KEY`.</li>
+            <li class="bullet-item"><strong>Session Persistence:</strong> Decrypted session strings resolve to `Token` instances in the database, verifying active logins.</li>
+            <li class="bullet-item"><strong>Token Binding:</strong> On logout, the token's `userId` binding is set to `null` while keeping anonymous tracking intact.</li>
+          </ul>
+          <div class="slide-footer">
+            <span>QuizMinia Presentation</span>
+            <span>Slide 7 of 20</span>
+          </div>
+        </div>
+        <div class="slide-visual-right">
+          <div class="card" style="width: 90%;">
+            <div class="card-title">🔒 Decryption Routine</div>
+            <pre style="color: #f472b6; font-size: 0.65rem;">
+const decipher = crypto.createDecipheriv(
+  'aes-256-cbc', 
+  key, 
+  iv
+);
+let decrypted = decipher.update(ciphertext, 'hex', 'utf8');
+decrypted += decipher.final('utf8');
+            </pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 8: Security: PBKDF2 Hashing -->
+      <div class="slide-container" data-slide="8">
+        <div class="slide-content-left">
+          <div class="slide-title-area">
+            <span class="slide-tag">Security</span>
+            <h2 class="slide-title">Cryptographic Hashing</h2>
+          </div>
+          <p class="slide-description">
+            Password hashing relies on industry-strength algorithms to secure user accounts.
+          </p>
+          <ul class="bullet-list">
+            <li class="bullet-item"><strong>Algorithm:</strong> PBKDF2 with SHA-512.</li>
+            <li class="bullet-item"><strong>Salting:</strong> 32 cryptographically secure random bytes generated uniquely per user.</li>
+            <li class="bullet-item"><strong>Iterations:</strong> 1,000 passes to prevent hardware brute-forcing.</li>
+            <li class="bullet-item"><strong>Constant-Time Verification:</strong> Uses `crypto.timingSafeEqual` (via `Buffer.equals`) to defeat timing analysis.</li>
+          </ul>
+          <div class="slide-footer">
+            <span>QuizMinia Presentation</span>
+            <span>Slide 8 of 20</span>
+          </div>
+        </div>
+        <div class="slide-visual-right">
+          <div class="card" style="width: 90%;">
+            <div class="card-title">🔐 PBKDF2 Hashing Parameters</div>
+            <pre style="color: #fbcfe8; font-size: 0.65rem;">
+crypto.pbkdf2Sync(
+  password,
+  salt,
+  1000,
+  64,
+  'sha512'
+)
+            </pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 9: AI Adaptive Engine: Core Architecture -->
+      <div class="slide-container" data-slide="9">
+        <div class="slide-content-left">
+          <div class="slide-title-area">
+            <span class="slide-tag">AI Engine</span>
+            <h2 class="slide-title">The Adaptive Engine Concept</h2>
+          </div>
+          <p class="slide-description">
+            Rather than serving a linear sequence of questions, QuizMinia adjusts difficulty dynamically based on current student performance.
+          </p>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-title" style="color: #38bdf8;">📊 Scoring Ranges</div>
+              <p class="card-text">• <strong>0.00 – 0.35:</strong> Easy (Starter questions)</p>
+              <p class="card-text">• <strong>0.36 – 0.65:</strong> Medium (Intermediary content)</p>
+              <p class="card-text">• <strong>0.66 – 1.00:</strong> Hard (Advanced questions)</p>
+            </div>
+            <div class="card">
+              <div class="card-title" style="color: #f472b6;">🎯 Selection Logic</div>
+              <p class="card-text">
+                The engine sorts remaining unanswered questions by the absolute difference: `|question.difficultyScore - currentDifficultyScore|` and delivers the closest match.
+              </p>
+            </div>
+          </div>
+          <div class="slide-footer" style="margin-top: 40px;">
+            <span>QuizMinia Presentation</span>
+            <span>Slide 9 of 20</span>
+          </div>
+        </div>
+        <div class="slide-visual-right">
+          <div style="width: 80%; text-align: center;">
+            <div style="font-size: 3rem;">⚡</div>
+            <h4 style="margin-top: 10px; color: #fff;">Real-Time Personalization</h4>
+            <p class="card-text" style="margin-top: 5px;">Adjusts after every response is submitted, dynamically navigating the question pool.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 10: AI Adaptive Engine: AWS Bedrock Integration -->
+      <div class="slide-container" data-slide="10">
+        <div class="slide-content-left">
+          <div class="slide-title-area">
+            <span class="slide-tag">AI Engine</span>
+            <h2 class="slide-title">AWS Bedrock Integration</h2>
+          </div>
+          <p class="slide-description">
+            Bedrock is utilized to run LLM operations via structured system prompts.
+          </p>
+          <ul class="bullet-list">
+            <li class="bullet-item"><strong>Inference Service:</strong> Uses `google.gemma-3-4b-it` hosted on AWS Bedrock.</li>
+            <li class="bullet-item"><strong>Payload Structure:</strong> The prompt submits the student's current streaks, current difficulty, and correct/incorrect answer details.</li>
+            <li class="bullet-item"><strong>Structured Responses:</strong> Bedrock evaluates the status and returns a JSON package containing the next target difficulty and personalized feedback.</li>
+          </ul>
+          <div class="slide-footer">
+            <span>QuizMinia Presentation</span>
+            <span>Slide 10 of 20</span>
+          </div>
+        </div>
+        <div class="slide-visual-right">
+          <div class="card" style="width: 90%;">
+            <div class="card-title">🤖 Bedrock Response Format</div>
+            <pre style="color: #93c5fd; font-size: 0.65rem;">
+{
+  "nextDifficulty": 0.62,
+  "insight": "Great job! You have mastered 
+  the basics. Let's try a harder problem."
+}
+            </pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 11: AI Adaptive Engine: Rule-Based Fallback -->
+      <div class="slide-container" data-slide="11">
+        <div class="slide-content-left">
+          <div class="slide-title-area">
+            <span class="slide-tag">AI Engine</span>
+            <h2 class="slide-title">Rule-Based Fallback</h2>
+          </div>
+          <p class="slide-description">
+            To prevent system outages if AWS Bedrock is unreachable or rate-limited, QuizMinia automatically switches to a rule-based engine.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Condition</th>
+                <th>Difficulty Adjustment</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Correct streak ≥ 3</strong></td>
+                <td>+0.20 (Significant increase)</td>
+              </tr>
+              <tr>
+                <td><strong>Correct streak = 2</strong></td>
+                <td>+0.10 (Moderate increase)</td>
+              </tr>
+              <tr>
+                <td><strong>Single correct response</strong></td>
+                <td>+0.05 (Incremental increase)</td>
+              </tr>
+              <tr>
+                <td><strong>Wrong streak ≥ 3</strong></td>
+                <td>-0.20 (Significant decrease)</td>
+              </tr>
+              <tr>
+                <td><strong>Wrong streak = 2</strong></td>
+                <td>-0.10 (Moderate decrease)</td>
+              </tr>
+              <tr>
+                <td><strong>Single wrong response</strong></td>
+                <td>-0.05 (Incremental decrease)</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="slide-footer" style="margin-top: 24px;">
+            <span>QuizMinia Presentation</span>
+            <span>Slide 11 of 20</span>
+          </div>
+        </div>
+        <div class="slide-visual-right">
+          <div class="card" style="width: 90%;">
+            <div class="card-title">🔒 Clamping Mechanism</div>
+            <p class="card-text" style="margin-bottom: 8px;">
+              All calculations, whether from AI or fallback rules, are clamped using:
+            </p>
+            <pre style="color: #fbcfe8; font-size: 0.8rem;">
+Math.max(0.0, Math.min(1.0, score))
+            </pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 12: Application Walkthrough: Student Onboarding -->
+      <div class="slide-container slide-vertical-screenshot" data-slide="12">
+        <div class="slide-top-info">
+          <div class="slide-info-left">
+            <div class="slide-title-area" style="margin-bottom: 8px;">
+              <span class="slide-tag">Student Flow</span>
+              <h2 class="slide-title" style="font-size: 1.8rem;">Student Portal: Dashboard</h2>
+            </div>
+            <p class="slide-description" style="font-size: 0.9rem; margin-bottom: 0;">
+              The student dashboard displays statistics, past performance summaries, and recommendations.
+            </p>
+          </div>
+          <div class="slide-info-right">
+            <ul class="bullet-list">
+              <li class="bullet-item"><strong>Available Quizzes:</strong> Lists published quizzes and allows students to start attempts.</li>
+              <li class="bullet-item"><strong>AI Performance Profile:</strong> Displays average scores, strengths, weaknesses, and preferred difficulty.</li>
+              <li class="bullet-item"><strong>Quiz History:</strong> Tracks scores, durations, and passing status for each attempt.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-bottom-visual">
+          <div class="screen-frame">
+            <div class="screen-header">
+              <div class="screen-dot dot-red"></div>
+              <div class="screen-dot dot-yellow"></div>
+              <div class="screen-dot dot-green"></div>
+              <div class="screen-address">http://localhost:3000/dashboard</div>
+            </div>
+            <div class="screen-content">
+              <img src="/public/screenshots/student_dashboard.png" class="screen-img" alt="Student Dashboard">
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer" style="padding-top: 8px; width: 100%;">
+          <span>QuizMinia Presentation</span>
+          <span>Slide 12 of 20</span>
+        </div>
+      </div>
+
+      <!-- Slide 13: Application Walkthrough: Student Quiz Attempt -->
+      <div class="slide-container slide-vertical-screenshot" data-slide="13">
+        <div class="slide-top-info">
+          <div class="slide-info-left">
+            <div class="slide-title-area" style="margin-bottom: 8px;">
+              <span class="slide-tag">Student Flow</span>
+              <h2 class="slide-title" style="font-size: 1.8rem;">Student Portal: Interactive Testing</h2>
+            </div>
+            <p class="slide-description" style="font-size: 0.9rem; margin-bottom: 0;">
+              The adaptive testing interface presenting questions dynamically guided by the steering engine.
+            </p>
+          </div>
+          <div class="slide-info-right">
+            <ul class="bullet-list">
+              <li class="bullet-item"><strong>Real-time Feedback:</strong> Provides immediate explanations after submission.</li>
+              <li class="bullet-item"><strong>Progress Indicators:</strong> Displays question numbers, active difficulty levels, and current scores.</li>
+              <li class="bullet-item"><strong>Dynamic Navigation:</strong> Loads subsequent questions automatically without full page refreshes.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-bottom-visual">
+          <div class="screen-frame">
+            <div class="screen-header">
+              <div class="screen-dot dot-red"></div>
+              <div class="screen-dot dot-yellow"></div>
+              <div class="screen-dot dot-green"></div>
+              <div class="screen-address">http://localhost:3000/quiz-attempts/1</div>
+            </div>
+            <div class="screen-content">
+              <img src="/public/screenshots/student_quiz.png" class="screen-img" alt="Student Quiz Attempt">
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer" style="padding-top: 8px; width: 100%;">
+          <span>QuizMinia Presentation</span>
+          <span>Slide 13 of 20</span>
+        </div>
+      </div>
+
+      <!-- Slide 14: Application Walkthrough: Student Analytics Dashboard -->
+      <div class="slide-container" data-slide="14">
+        <div class="slide-content-left">
+          <div class="slide-title-area">
+            <span class="slide-tag">Student Flow</span>
+            <h2 class="slide-title">Performance Analytics</h2>
+          </div>
+          <p class="slide-description">
+            Visualizing learning trends and strengths/weaknesses helps students direct their studies.
+          </p>
+          <ul class="bullet-list">
+            <li class="bullet-item"><strong>Chart.js Integration:</strong> Renders graphs showing student score and difficulty trends over time.</li>
+            <li class="bullet-item"><strong>AI Strengths and Weaknesses:</strong> Analyzes topic tags to identify key learning gaps.</li>
+            <li class="bullet-item"><strong>Historical Milestones:</strong> Displays completed quiz performance profiles.</li>
+          </ul>
+          <div class="slide-footer">
+            <span>QuizMinia Presentation</span>
+            <span>Slide 14 of 20</span>
+          </div>
+        </div>
+        <div class="slide-visual-right">
+          <div class="card" style="width: 90%;">
+            <div class="card-title">📊 Analytics Visuals</div>
+            <p class="card-text" style="margin-bottom: 12px;">• <strong>Visual Component:</strong> Canvas-based line graphs.</p>
+            <p class="card-text" style="margin-bottom: 12px;">• <strong>Data Points:</strong> Average score, success rates, and active difficulty.</p>
+            <p class="card-text">• <strong>Insights:</strong> Dynamically parsed highlights from previous attempts.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 15: Application Walkthrough: Teacher Portal Overview -->
+      <div class="slide-container slide-vertical-screenshot" data-slide="15">
+        <div class="slide-top-info">
+          <div class="slide-info-left">
+            <div class="slide-title-area" style="margin-bottom: 8px;">
+              <span class="slide-tag">Teacher Flow</span>
+              <h2 class="slide-title" style="font-size: 1.8rem;">Teacher Dashboard</h2>
+            </div>
+            <p class="slide-description" style="font-size: 0.9rem; margin-bottom: 0;">
+              Allows teachers to monitor and manage classroom progress.
+            </p>
+          </div>
+          <div class="slide-info-right">
+            <ul class="bullet-list">
+              <li class="bullet-item"><strong>Roster Monitoring:</strong> Displays overall class performance, pass rates, and completion statistics.</li>
+              <li class="bullet-item"><strong>Quiz Management:</strong> Provides controls to edit questions, toggle adaptive settings, and publish assessments.</li>
+              <li class="bullet-item"><strong>AI Insights:</strong> Aggregates metrics from student attempts for review.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-bottom-visual">
+          <div class="screen-frame">
+            <div class="screen-header">
+              <div class="screen-dot dot-red"></div>
+              <div class="screen-dot dot-yellow"></div>
+              <div class="screen-dot dot-green"></div>
+              <div class="screen-address">http://localhost:3000/dashboard/teacher</div>
+            </div>
+            <div class="screen-content">
+              <img src="/public/screenshots/teacher_dashboard.png" class="screen-img" alt="Teacher Dashboard">
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer" style="padding-top: 8px; width: 100%;">
+          <span>QuizMinia Presentation</span>
+          <span>Slide 15 of 20</span>
+        </div>
+      </div>
+
+      <!-- Slide 16: Application Walkthrough: AI Question Generation -->
+      <div class="slide-container" data-slide="16">
+        <div class="slide-content-left">
+          <div class="slide-title-area">
+            <span class="slide-tag">Teacher Flow</span>
+            <h2 class="slide-title">AI Question Generator</h2>
+          </div>
+          <p class="slide-description">
+            Streamlines assessment creation by generating questions automatically.
+          </p>
+          <ul class="bullet-list">
+            <li class="bullet-item"><strong>Automated Drafting:</strong> Generates 5 multiple-choice questions, options, answers, and tags based on a subject.</li>
+            <li class="bullet-item"><strong>Difficulty Calibration:</strong> Formulates questions corresponding to target difficulties (0.0 to 1.0).</li>
+            <li class="bullet-item"><strong>Saves Time:</strong> Populates questions instantly, allowing teachers to review and edit before publishing.</li>
+          </ul>
+          <div class="slide-footer">
+            <span>QuizMinia Presentation</span>
+            <span>Slide 16 of 20</span>
+          </div>
+        </div>
+        <div class="slide-visual-right">
+          <div class="card" style="width: 90%;">
+            <div class="card-title">⚙️ Generator Parameters</div>
+            <pre style="color: #6ee7b7; font-size: 0.65rem;">
+// Request payload to AI module
+{
+  "title": "Introduction to Algebra",
+  "subject": "Mathematics",
+  "difficulty": 0.45,
+  "generateAiQuestions": true
+}
+            </pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 17: Application Walkthrough: Student Attempt Insights -->
+      <div class="slide-container slide-vertical-screenshot" data-slide="17">
+        <div class="slide-top-info">
+          <div class="slide-info-left">
+            <div class="slide-title-area" style="margin-bottom: 8px;">
+              <span class="slide-tag">Teacher Flow</span>
+              <h2 class="slide-title" style="font-size: 1.8rem;">Student Attempt Tracking</h2>
+            </div>
+            <p class="slide-description" style="font-size: 0.9rem; margin-bottom: 0;">
+              Enables teachers to view details of student quiz attempts and review AI performance insights.
+            </p>
+          </div>
+          <div class="slide-info-right">
+            <ul class="bullet-list">
+              <li class="bullet-item"><strong>Score Details:</strong> Tracks final scores, question counts, and duration.</li>
+              <li class="bullet-item"><strong>AI Insights:</strong> Displays strengths, weaknesses, and recommendations for each student.</li>
+              <li class="bullet-item"><strong>Interactive Review:</strong> Features overlays with detailed stats for easy grading and feedback.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-bottom-visual">
+          <div class="screen-frame">
+            <div class="screen-header">
+              <div class="screen-dot dot-red"></div>
+              <div class="screen-dot dot-yellow"></div>
+              <div class="screen-dot dot-green"></div>
+              <div class="screen-address">http://localhost:3000/dashboard/teacher-attempts</div>
+            </div>
+            <div class="screen-content">
+              <img src="/public/screenshots/teacher_attempts.png" class="screen-img" alt="Teacher Attempts View">
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer" style="padding-top: 8px; width: 100%;">
+          <span>QuizMinia Presentation</span>
+          <span>Slide 17 of 20</span>
+        </div>
+      </div>
+
+      <!-- Slide 18: Application Walkthrough: Admin Control Panel -->
+      <div class="slide-container slide-vertical-screenshot" data-slide="18">
+        <div class="slide-top-info">
+          <div class="slide-info-left">
+            <div class="slide-title-area" style="margin-bottom: 8px;">
+              <span class="slide-tag">Admin Flow</span>
+              <h2 class="slide-title" style="font-size: 1.8rem;">Admin Dashboard</h2>
+            </div>
+            <p class="slide-description" style="font-size: 0.9rem; margin-bottom: 0;">
+              Provides system-wide administration controls.
+            </p>
+          </div>
+          <div class="slide-info-right">
+            <ul class="bullet-list">
+              <li class="bullet-item"><strong>Roster Control:</strong> Features active rosters, allowing admins to toggle user status.</li>
+              <li class="bullet-item"><strong>User Deactivation:</strong> Enables admins to deactivate users, blocking dashboard access.</li>
+              <li class="bullet-item"><strong>Database Maintenance:</strong> Provides system utilities to clean up data.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-bottom-visual">
+          <div class="screen-frame">
+            <div class="screen-header">
+              <div class="screen-dot dot-red"></div>
+              <div class="screen-dot dot-yellow"></div>
+              <div class="screen-dot dot-green"></div>
+              <div class="screen-address">http://localhost:3000/dashboard/admin</div>
+            </div>
+            <div class="screen-content">
+              <img src="/public/screenshots/admin_dashboard.png" class="screen-img" alt="Admin Dashboard">
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer" style="padding-top: 8px; width: 100%;">
+          <span>QuizMinia Presentation</span>
+          <span>Slide 18 of 20</span>
+        </div>
+      </div>
+
+      <!-- Slide 19: Notifications and Schedulers -->
+      <div class="slide-container" data-slide="19">
+        <div class="slide-content-left">
+          <div class="slide-title-area">
+            <span class="slide-tag">Background Tasks</span>
+            <h2 class="slide-title">Scheduler Cron Jobs</h2>
+          </div>
+          <p class="slide-description">
+            Automates tasks to keep students informed and clean up stale data.
+          </p>
+          <ul class="bullet-list">
+            <li class="bullet-item"><strong>Quiz Reminders:</strong> Scans upcoming quizzes and sends notifications/emails 30 minutes before they start.</li>
+            <li class="bullet-item"><strong>Stale Attempt Cleanup:</strong> Runs hourly, marking in-progress attempts older than 24 hours as abandoned.</li>
+            <li class="bullet-item"><strong>Email Delivery:</strong> Dispatches welcome emails and summaries using SMTP.</li>
+          </ul>
+          <div class="slide-footer">
+            <span>QuizMinia Presentation</span>
+            <span>Slide 19 of 20</span>
+          </div>
+        </div>
+        <div class="slide-visual-right">
+          <div class="card" style="width: 90%;">
+            <div class="card-title">⏰ Cron Schedules</div>
+            <p class="card-text" style="margin-bottom: 12px;">• <strong>Reminders:</strong> `CronExpression.EVERY_5_MINUTES`</p>
+            <p class="card-text" style="margin-bottom: 12px;">• <strong>Cleanup:</strong> `CronExpression.EVERY_HOUR`</p>
+            <p class="card-text">• <strong>In-app alerts:</strong> Instant creation in `Notification` table.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 20: Testing & Conclusion -->
+      <div class="slide-container" data-slide="20">
+        <div class="slide-content-left">
+          <div class="slide-title-area">
+            <span class="slide-tag">Testing & Summary</span>
+            <h2 class="slide-title">Testing & Conclusion</h2>
+          </div>
+          <p class="slide-description">
+            Robust testing and dynamic features ensure QuizMinia is production-ready.
+          </p>
+          <ul class="bullet-list">
+            <li class="bullet-item"><strong>Unit Testing:</strong> Tested services (`AiService`, `AuthService`, `QuizAttemptsService`) using Jest.</li>
+            <li class="bullet-item"><strong>E2E Testing:</strong> Validated endpoints and flows using Supertest.</li>
+            <li class="bullet-item"><strong>Conclusion:</strong> QuizMinia shows how combining modular architecture, Sequelize relationships, and AI steering creates a personalized, scalable learning platform.</li>
+          </ul>
+          <div class="slide-footer">
+            <span>QuizMinia Presentation</span>
+            <span>Slide 20 of 20</span>
+          </div>
+        </div>
+        <div class="slide-visual-right">
+          <div style="text-align: center;">
+            <div style="font-size: 3.5rem; color: var(--accent-secondary);">✓</div>
+            <h3 style="color: #fff; margin-top: 10px;">Platform Ready</h3>
+            <p class="card-text" style="margin-top: 5px;">Prepared for production deployment</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Grid View Overlay -->
+  <div class="grid-view-container" id="gridView">
+    <!-- Generated Dynamically -->
+  </div>
+
+  <script>
+    // Data definition for list items
+    const slideTitles = [
+      "Cover Page",
+      "Executive Summary",
+      "Problem & Solution",
+      "System Architecture",
+      "Core Tech Stack",
+      "Database Schema",
+      "Cookie-Based Sessions",
+      "Cryptographic Hashing",
+      "Adaptive Engine Concept",
+      "AWS Bedrock Integration",
+      "Rule-Based Fallback",
+      "Student Dashboard",
+      "Student Quiz Attempt",
+      "Performance Analytics",
+      "Teacher Dashboard",
+      "AI Question Generator",
+      "Student Attempt Tracking",
+      "Admin Dashboard",
+      "Scheduler Cron Jobs",
+      "Testing & Conclusion"
+    ];
+
+    const slideDescriptions = [
+      "QuizMinia: Next-Generation AI-Adaptive Learning Platform Overview",
+      "Platform objectives, backend framework, and core features",
+      "Traditional testing gaps and dynamic difficulty solutions",
+      "MVC layout, isolated features, and data flow",
+      "Backend, database, ORM, and AI versions",
+      "Database relationships, entities, and soft deletes",
+      "AES-256 session token decryption middleware",
+      "PBKDF2 SHA-512 salting and password hashing",
+      "Float ranges and question selection logic",
+      "Inference payload structure and JSON responses",
+      "Streak calculations and clamping fallbacks",
+      "Available assessments and user analytics dashboard",
+      "Adaptive MCQ and short answer UI walkthrough",
+      "Line graphs, trends, and strength indicators",
+      "Classroom progress and quiz toggles",
+      "Prompt payload for MCQ generation",
+      "Attempt details and teacher insight modal reviews",
+      "Active rosters, deactivation, and soft deletes",
+      "Background quiz reminders and cleanup crons",
+      "Jest unit tests, E2E endpoints, and project summary"
+    ];
+
+    const slideTags = [
+      "Cover", "Overview", "Context", "Architecture", "Technology",
+      "Database", "Security", "Security", "AI Engine", "AI Engine",
+      "AI Engine", "Student Flow", "Student Flow", "Student Flow",
+      "Teacher Flow", "Teacher Flow", "Teacher Flow", "Admin Flow",
+      "Background", "Summary"
+    ];
+
+    let currentSlide = 1;
+    const totalSlides = 20;
+    let isGridView = false;
+
+    // Build sidebar & grid view
+    const slideList = document.getElementById('slideList');
+    const gridView = document.getElementById('gridView');
+
+    for (let i = 1; i <= totalSlides; i++) {
+      // Sidebar Item
+      const li = document.createElement('li');
+      li.className = `slide-item ${i === 1 ? 'active' : ''}`;
+      li.setAttribute('data-id', i);
+      li.innerHTML = `
+        <div class="slide-num">${i}</div>
+        <span>${slideTitles[i-1]}</span>
+      `;
+      li.addEventListener('click', () => jumpToSlide(i));
+      slideList.appendChild(li);
+
+      // Grid Card Item
+      const card = document.createElement('div');
+      card.className = 'grid-card';
+      card.innerHTML = `
+        <div>
+          <span class="grid-card-num">SLIDE ${i}</span>
+          <h3 class="grid-card-title">${slideTitles[i-1]}</h3>
+          <p class="grid-card-desc">${slideDescriptions[i-1]}</p>
+        </div>
+        <span class="grid-card-tag">${slideTags[i-1]}</span>
+      `;
+      card.addEventListener('click', () => {
+        toggleGridView(false);
+        jumpToSlide(i);
+      });
+      gridView.appendChild(card);
+    }
+
+    // Switch Slide
+    function showSlide(index) {
+      document.querySelectorAll('.slide-container').forEach(el => {
+        el.classList.remove('active-slide');
+      });
+      document.querySelector(`.slide-container[data-slide="${index}"]`).classList.add('active-slide');
+
+      // Update sidebar active class
+      document.querySelectorAll('.slide-item').forEach((el, idx) => {
+        if (idx + 1 === index) {
+          el.classList.add('active');
+          el.scrollIntoView({ block: 'nearest' });
+        } else {
+          el.classList.remove('active');
+        }
+      });
+
+      // Update label and progress bar
+      document.getElementById('slideIndexLabel').innerText = `${index} / ${totalSlides}`;
+      document.getElementById('progressFill').style.width = `${(index / totalSlides) * 100}%`;
+      
+      currentSlide = index;
+    }
+
+    function jumpToSlide(index) {
+      if (index < 1 || index > totalSlides) return;
+      showSlide(index);
+    }
+
+    // Navigation Buttons
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      if (currentSlide > 1) {
+        showSlide(currentSlide - 1);
+      }
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      if (currentSlide < totalSlides) {
+        showSlide(currentSlide + 1);
+      }
+    });
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e) => {
+      if (isGridView) return;
+      if (e.key === 'ArrowRight' || e.key === 'Space') {
+        e.preventDefault();
+        if (currentSlide < totalSlides) showSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || (e.key === 'Space' && e.shiftKey)) {
+        e.preventDefault();
+        if (currentSlide > 1) showSlide(currentSlide - 1);
+      }
+    });
+
+    // Sidebar Toggle
+    document.getElementById('toggleSidebar').addEventListener('click', () => {
+      document.body.classList.toggle('collapsed-sidebar');
+    });
+
+    // Grid View Toggle
+    const toggleGridBtn = document.getElementById('toggleGrid');
+    function toggleGridView(forceState) {
+      isGridView = typeof forceState === 'boolean' ? forceState : !isGridView;
+      if (isGridView) {
+        gridView.style.display = 'grid';
+        toggleGridBtn.innerHTML = '🗖';
+        toggleGridBtn.title = "Show Single Slide";
+      } else {
+        gridView.style.display = 'none';
+        toggleGridBtn.innerHTML = '⊞';
+        toggleGridBtn.title = "Toggle Grid View";
+      }
+    }
+    toggleGridBtn.addEventListener('click', () => toggleGridView());
+
+    // Initial load
+    showSlide(1);
+  </script>
+</body>
+</html>
